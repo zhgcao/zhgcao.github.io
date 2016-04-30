@@ -229,6 +229,109 @@
             
               
                 
+                <a class="post-title-link" href="/2016/04/30/ubuntu-install-btsync/" itemprop="url">
+                  Ubuntu��װBTSync
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-30T12:30:00+08:00" content="2016-04-30">
+              2016-04-30
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://www.getsync.com/" target="_blank" rel="external">BTSync</a>�Ƕ�̨����֮��ͬ���ļ����������ܺ��á�</p>
+<p>��Ubuntu�ϰ�װBTSync�Ĳ��裺</p>
+<h1 id="����btsync�ٷ���Repository��"><a href="#����btsync�ٷ���Repository��" class="headerlink" title="����btsync�ٷ���Repository��"></a>����btsync�ٷ���Repository��</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &apos;echo &quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&quot; &gt; /etc/apt/sources.list.d/btsync.list&apos;</span><br></pre></td></tr></table></figure>
+<h1 id="��װBTSync��Public-key��ʹUbuntu���δ�Repository��"><a href="#��װBTSync��Public-key��ʹUbuntu���δ�Repository��" class="headerlink" title="��װBTSync��Public key��ʹUbuntu���δ�Repository��"></a>��װBTSync��Public key��ʹUbuntu���δ�Repository��</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -qO - http://linux-packages.getsync.com/btsync/key.asc | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+<h1 id="������������apt-get��װBTSync�ˡ�"><a href="#������������apt-get��װBTSync�ˡ�" class="headerlink" title="������������apt-get��װBTSync�ˡ�"></a>������������apt-get��װBTSync�ˡ�</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install btsync</span><br></pre></td></tr></table></figure>
+<h1 id="��������ͬ����L¼����E��btsync�u����Ժ�ͬ����L¼��������L¼�¡�"><a href="#��������ͬ����L¼����E��btsync�u����Ժ�ͬ����L¼��������L¼�¡�" class="headerlink" title="��������ͬ����Ŀ¼����Ȩ��btsync�û����Ժ�ͬ����Ŀ¼��������Ŀ¼�¡�"></a>��������ͬ����Ŀ¼����Ȩ��btsync�û����Ժ�ͬ����Ŀ¼��������Ŀ¼�¡�</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /home/btsync</span><br><span class="line">sudo chown btsync /home/btsync</span><br></pre></td></tr></table></figure>
+<h1 id="ʹBTSync�Զ�������I�������������u���btsync"><a href="#ʹBTSync�Զ�������I�������������u���btsync" class="headerlink" title="ʹBTSync�Զ�������Ĭ�������������û���btsync"></a>ʹBTSync�Զ�������Ĭ�������������û���btsync</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl enable btsync</span><br></pre></td></tr></table></figure>
+<p>����enable��systemctl������Դ�disable��start��stop��status�Ȳ�����</p>
+<h1 id="ͨ��web����BTSync��������������localhost-8888"><a href="#ͨ��web����BTSync��������������localhost-8888" class="headerlink" title="ͨ��web����BTSync��������������localhost:8888"></a>ͨ��web����BTSync��������������localhost:8888</h1><p>������VPS��Ubuntu server��û��ͼ�ν�����ϵͳ�����Ա༭BTSync�������ļ���<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/btsync/config.json</span><br></pre></td></tr></table></figure></p>
+<p>�ҵ��������ݣ�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;webui&quot; :</span><br><span class="line">&#123;</span><br><span class="line">    &quot;listen&quot; : &quot;127.0.0.1:8888&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>�� “127.0.0.1:8888” �޸�Ϊ “0.0.0.0:8888” �������˳���Ȼ������BTSync�������������������� “Ubuntu_IP:8888” ������BTSync</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/04/22/create-tags-page/" itemprop="url">
                   创建Tags页面
                 </a>
@@ -570,7 +673,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">4</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -580,7 +683,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
