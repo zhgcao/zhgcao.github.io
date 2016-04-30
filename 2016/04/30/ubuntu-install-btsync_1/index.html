@@ -80,22 +80,22 @@
 
 
 
-<meta name="description" content="BTSync是多台电脑之间同步文件的利器，很好用。
-在Ubuntu上安装BTSync的步骤：
-添加btsync官方的Repository。1sudo sh -c &amp;apos;echo &amp;quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&amp;quot; &amp;gt; /etc/apt/sources.list.d/bt">
+<meta name="description" content="BTSync�Ƕ�̨����֮��ͬ���ļ����������ܺ��á�
+��Ubuntu�ϰ�װBTSync�Ĳ��裺
+����btsync�ٷ���Repository��1sudo sh -c &amp;apos;echo &amp;quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&amp;quot; &amp;gt; /etc/a">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ubuntu安装BTSyncc">
-<meta property="og:url" content="https://zhgcao.github.io/2016/04/30/ubuntu-install-btsync/index.html">
+<meta property="og:title" content="Ubuntu��װBTSync">
+<meta property="og:url" content="https://zhgcao.github.io/2016/04/30/ubuntu-install-btsync_1/index.html">
 <meta property="og:site_name" content="学习杂记">
-<meta property="og:description" content="BTSync是多台电脑之间同步文件的利器，很好用。
-在Ubuntu上安装BTSync的步骤：
-添加btsync官方的Repository。1sudo sh -c &amp;apos;echo &amp;quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&amp;quot; &amp;gt; /etc/apt/sources.list.d/bt">
-<meta property="og:updated_time" content="2016-04-30T06:26:01.895Z">
+<meta property="og:description" content="BTSync�Ƕ�̨����֮��ͬ���ļ����������ܺ��á�
+��Ubuntu�ϰ�װBTSync�Ĳ��裺
+����btsync�ٷ���Repository��1sudo sh -c &amp;apos;echo &amp;quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&amp;quot; &amp;gt; /etc/a">
+<meta property="og:updated_time" content="2016-04-30T06:18:26.058Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ubuntu安装BTSyncc">
-<meta name="twitter:description" content="BTSync是多台电脑之间同步文件的利器，很好用。
-在Ubuntu上安装BTSync的步骤：
-添加btsync官方的Repository。1sudo sh -c &amp;apos;echo &amp;quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&amp;quot; &amp;gt; /etc/apt/sources.list.d/bt">
+<meta name="twitter:title" content="Ubuntu��װBTSync">
+<meta name="twitter:description" content="BTSync�Ƕ�̨����֮��ͬ���ļ����������ܺ��á�
+��Ubuntu�ϰ�װBTSync�Ĳ��裺
+����btsync�ٷ���Repository��1sudo sh -c &amp;apos;echo &amp;quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&amp;quot; &amp;gt; /etc/a">
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> Ubuntu安装BTSyncc | 学习杂记 </title>
+  <title> Ubuntu��װBTSync | 学习杂记 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -233,7 +233,7 @@
             
             
               
-                Ubuntu安装BTSyncc
+                Ubuntu��װBTSync
               
             
           </h1>
@@ -245,7 +245,7 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-04-30T14:25:12+08:00" content="2016-04-30">
+            <time itemprop="dateCreated" datetime="2016-04-30T12:30:00+08:00" content="2016-04-30">
               2016-04-30
             </time>
           </span>
@@ -272,17 +272,17 @@
       
 
       
-        <p><a href="https://www.getsync.com/" target="_blank" rel="external">BTSync</a>是多台电脑之间同步文件的利器，很好用。</p>
-<p>在Ubuntu上安装BTSync的步骤：</p>
-<h1 id="添加btsync官方的Repository。"><a href="#添加btsync官方的Repository。" class="headerlink" title="添加btsync官方的Repository。"></a>添加btsync官方的Repository。</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &apos;echo &quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&quot; &gt; /etc/apt/sources.list.d/btsync.list&apos;</span><br></pre></td></tr></table></figure>
-<h1 id="安装BTSync的Public-key，使Ubuntu信任此Repository。"><a href="#安装BTSync的Public-key，使Ubuntu信任此Repository。" class="headerlink" title="安装BTSync的Public key，使Ubuntu信任此Repository。"></a>安装BTSync的Public key，使Ubuntu信任此Repository。</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -qO - http://linux-packages.getsync.com/btsync/key.asc | sudo apt-key add -</span><br></pre></td></tr></table></figure>
-<h1 id="接下来就能用apt-get安装BTSync了。"><a href="#接下来就能用apt-get安装BTSync了。" class="headerlink" title="接下来就能用apt-get安装BTSync了。"></a>接下来就能用apt-get安装BTSync了。</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install btsync</span><br></pre></td></tr></table></figure>
-<h1 id="创建用于同步的目录并授权给btsync用户，以后同步到目录放在这个目录下。"><a href="#创建用于同步的目录并授权给btsync用户，以后同步到目录放在这个目录下。" class="headerlink" title="创建用于同步的目录并授权给btsync用户，以后同步到目录放在这个目录下。"></a>创建用于同步的目录并授权给btsync用户，以后同步到目录放在这个目录下。</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /home/btsync</span><br><span class="line">sudo chown btsync /home/btsync</span><br></pre></td></tr></table></figure>
-<h1 id="使BTSync自动启动，默认启动服务的用户是btsync"><a href="#使BTSync自动启动，默认启动服务的用户是btsync" class="headerlink" title="使BTSync自动启动，默认启动服务的用户是btsync"></a>使BTSync自动启动，默认启动服务的用户是btsync</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl enable btsync</span><br></pre></td></tr></table></figure>
-<p>除了enable，systemctl命令还可以带disable、start、stop、status等参数。</p>
-<h1 id="通过web设置BTSync，用浏览器访问localhost-8888"><a href="#通过web设置BTSync，用浏览器访问localhost-8888" class="headerlink" title="通过web设置BTSync，用浏览器访问localhost:8888"></a>通过web设置BTSync，用浏览器访问localhost:8888</h1><p>如果是VPS或Ubuntu server等没有图形界面的系统，可以编辑BTSync的配置文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/btsync/config.json</span><br></pre></td></tr></table></figure></p>
-<p>找到下面内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;webui&quot; :</span><br><span class="line">&#123;</span><br><span class="line">    &quot;listen&quot; : &quot;127.0.0.1:8888&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>将 “127.0.0.1:8888” 修改为 “0.0.0.0:8888” ，保存退出。然后重启BTSync，就能用其他机器访问 “Ubuntu_IP:8888” 来设置BTSync。</p>
+        <p><a href="https://www.getsync.com/" target="_blank" rel="external">BTSync</a>�Ƕ�̨����֮��ͬ���ļ����������ܺ��á�</p>
+<p>��Ubuntu�ϰ�װBTSync�Ĳ��裺</p>
+<h1 id="����btsync�ٷ���Repository��"><a href="#����btsync�ٷ���Repository��" class="headerlink" title="����btsync�ٷ���Repository��"></a>����btsync�ٷ���Repository��</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &apos;echo &quot;deb http://linux-packages.getsync.com/btsync/deb btsync non-free&quot; &gt; /etc/apt/sources.list.d/btsync.list&apos;</span><br></pre></td></tr></table></figure>
+<h1 id="��װBTSync��Public-key��ʹUbuntu���δ�Repository��"><a href="#��װBTSync��Public-key��ʹUbuntu���δ�Repository��" class="headerlink" title="��װBTSync��Public key��ʹUbuntu���δ�Repository��"></a>��װBTSync��Public key��ʹUbuntu���δ�Repository��</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -qO - http://linux-packages.getsync.com/btsync/key.asc | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+<h1 id="������������apt-get��װBTSync�ˡ�"><a href="#������������apt-get��װBTSync�ˡ�" class="headerlink" title="������������apt-get��װBTSync�ˡ�"></a>������������apt-get��װBTSync�ˡ�</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install btsync</span><br></pre></td></tr></table></figure>
+<h1 id="��������ͬ����L¼����E��btsync�u����Ժ�ͬ����L¼��������L¼�¡�"><a href="#��������ͬ����L¼����E��btsync�u����Ժ�ͬ����L¼��������L¼�¡�" class="headerlink" title="��������ͬ����Ŀ¼����Ȩ��btsync�û����Ժ�ͬ����Ŀ¼��������Ŀ¼�¡�"></a>��������ͬ����Ŀ¼����Ȩ��btsync�û����Ժ�ͬ����Ŀ¼��������Ŀ¼�¡�</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /home/btsync</span><br><span class="line">sudo chown btsync /home/btsync</span><br></pre></td></tr></table></figure>
+<h1 id="ʹBTSync�Զ�������I�������������u���btsync"><a href="#ʹBTSync�Զ�������I�������������u���btsync" class="headerlink" title="ʹBTSync�Զ�������Ĭ�������������û���btsync"></a>ʹBTSync�Զ�������Ĭ�������������û���btsync</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl enable btsync</span><br></pre></td></tr></table></figure>
+<p>����enable��systemctl������Դ�disable��start��stop��status�Ȳ�����</p>
+<h1 id="ͨ��web����BTSync��������������localhost-8888"><a href="#ͨ��web����BTSync��������������localhost-8888" class="headerlink" title="ͨ��web����BTSync��������������localhost:8888"></a>ͨ��web����BTSync��������������localhost:8888</h1><p>������VPS��Ubuntu server��û��ͼ�ν�����ϵͳ�����Ա༭BTSync�������ļ���<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/btsync/config.json</span><br></pre></td></tr></table></figure></p>
+<p>�ҵ��������ݣ�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;webui&quot; :</span><br><span class="line">&#123;</span><br><span class="line">    &quot;listen&quot; : &quot;127.0.0.1:8888&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>�� “127.0.0.1:8888” �޸�Ϊ “0.0.0.0:8888” �������˳���Ȼ������BTSync�������������������� “Ubuntu_IP:8888” ������BTSync</p>
 
       
     </div>
@@ -314,13 +314,17 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/30/ubuntu-install-btsync_1/" rel="next" title="Ubuntu��װBTSync">
-                <i class="fa fa-chevron-left"></i> Ubuntu��װBTSync
+              <a href="/2016/04/22/create-tags-page/" rel="next" title="创建Tags页面">
+                <i class="fa fa-chevron-left"></i> 创建Tags页面
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/30/ubuntu-install-btsync/" rel="prev" title="Ubuntu安装BTSyncc">
+                Ubuntu安装BTSyncc <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -429,7 +433,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#添加btsync官方的Repository。"><span class="nav-number">1.</span> <span class="nav-text">添加btsync官方的Repository。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装BTSync的Public-key，使Ubuntu信任此Repository。"><span class="nav-number">2.</span> <span class="nav-text">安装BTSync的Public key，使Ubuntu信任此Repository。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#接下来就能用apt-get安装BTSync了。"><span class="nav-number">3.</span> <span class="nav-text">接下来就能用apt-get安装BTSync了。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建用于同步的目录并授权给btsync用户，以后同步到目录放在这个目录下。"><span class="nav-number">4.</span> <span class="nav-text">创建用于同步的目录并授权给btsync用户，以后同步到目录放在这个目录下。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使BTSync自动启动，默认启动服务的用户是btsync"><span class="nav-number">5.</span> <span class="nav-text">使BTSync自动启动，默认启动服务的用户是btsync</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过web设置BTSync，用浏览器访问localhost-8888"><span class="nav-number">6.</span> <span class="nav-text">通过web设置BTSync，用浏览器访问localhost:8888</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#����btsync�ٷ���Repository��"><span class="nav-number">1.</span> <span class="nav-text">����btsync�ٷ���Repository��</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#��װBTSync��Public-key��ʹUbuntu���δ�Repository��"><span class="nav-number">2.</span> <span class="nav-text">��װBTSync��Public key��ʹUbuntu���δ�Repository��</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#������������apt-get��װBTSync�ˡ�"><span class="nav-number">3.</span> <span class="nav-text">������������apt-get��װBTSync�ˡ�</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#��������ͬ����L¼����E��btsync�u����Ժ�ͬ����L¼��������L¼�¡�"><span class="nav-number">4.</span> <span class="nav-text">��������ͬ����Ŀ¼����Ȩ��btsync�û����Ժ�ͬ����Ŀ¼��������Ŀ¼�¡�</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ʹBTSync�Զ�������I�������������u���btsync"><span class="nav-number">5.</span> <span class="nav-text">ʹBTSync�Զ�������Ĭ�������������û���btsync</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ͨ��web����BTSync��������������localhost-8888"><span class="nav-number">6.</span> <span class="nav-text">ͨ��web����BTSync��������������localhost:8888</span></a></li></ol></div>
             
           </div>
         </section>
