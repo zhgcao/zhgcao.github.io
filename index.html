@@ -229,6 +229,104 @@
             
               
                 
+                <a class="post-title-link" href="/2016/05/11/git-sparse-checkout/" itemprop="url">
+                  Git只获取部分目录的内容
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-11T10:53:47+08:00" content="2016-05-11">
+              2016-05-11
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>公司的开发从SVN切换到Git，在SVN下，可以很方便的只获取版本库中一个或多个目录的内容，但是Git的克隆，默认是直接拉取整个远程仓库，这样大量和自己无关的内容也会拉到本地，占用很多硬盘空间。</p>
+<p>在网上搜了一下，Git在1.7版本后，已经支持只Checkout部分内容，这个功能叫做sparse checkout，用起来稍麻烦一点。</p>
+<p>要用这个功能，先进入要放版本库的目录，在命令行执行几条命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git init ems</span><br><span class="line">$ <span class="built_in">cd</span> ems</span><br><span class="line">$ git remote add origin ssh://&lt;user&gt;@&lt;repository<span class="string">'s url&gt;</span><br><span class="line">$ git config core.sparsecheckout true</span><br><span class="line">$ echo "path1/*" &gt;&gt; .git/info/sparse-checkout</span><br><span class="line">$ echo "path2/*" &gt;&gt; .git/info/sparse-checkout</span><br><span class="line">$ git pull origin master</span></span><br></pre></td></tr></table></figure></p>
+<p>第一条命令<code>git init ems</code>，先建立一个空的版本库。<br>第二条命令<code>cd ems</code>，进入创建的新的版本库的目录。<br>第三条命令<code>git remote add origin ssh://&lt;user&gt;@&lt;repository&#39;s url&gt;</code>，添加远程库的地址。<br>第四条命令<code>git config core.sparsecheckout true</code>，打开sparse checkout功能。<br>第五第六条命令<code>echo &quot;path1/*&quot; &gt;&gt; .git/info/sparse-checkout</code>，添加2个目录到checkout的列表。路径是版本库下的相对路径，也可以用文本编辑器编辑这个文件。<br>第七条命令<code>git pull origin master</code>，拉取远程的 master 分支，也可以拉其他分支。<br>如果只拉取最近一次的变更，忽略以前的变更记录，在拉取时可以加参数depth，如<code>git pull --depth=1 origin master</code></p>
+<p>如果以后修改了 .git/info/sparse-checkout，增加或删除部分目录，可以执行如下命令重新Checkout<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout master</span><br></pre></td></tr></table></figure></p>
+<p>其实这样Checkout，仅仅是其他的文件不显示在工作区，整个分支的变更记录仍然会被拉到本地，这点和SVN还是不同的，不过就算这样，也能节省不少空间了。</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/10/ubuntu-install-shadowsocks/" itemprop="url">
                   Ubuntu安装Shadowsocks
                 </a>
@@ -1085,7 +1183,7 @@ print(&apos;hello world!&apos;)
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1095,7 +1193,7 @@ print(&apos;hello world!&apos;)
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
