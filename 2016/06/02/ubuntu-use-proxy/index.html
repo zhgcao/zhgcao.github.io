@@ -64,7 +64,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Markdown," />
+  <meta name="keywords" content="Ubuntu,Git," />
 
 
 
@@ -80,22 +80,22 @@
 
 
 
-<meta name="description" content="今天用Markdown写一篇文章，里面用了一对尖括号，但在生成的网页中，却发现尖括号以及其中的内容均消失了，在尖括号前加反斜杠也无效，除非左尖括号后面跟的是中文。以下是几种示例：123例1：&amp;lt;not display&amp;gt;例2：\&amp;lt;not display\&amp;gt;例3：&amp;lt;中文可以显示&amp;gt;
-显示为：例1：例2：\例3：&amp;lt;中文可以显示&amp;gt;
-在网上查了一下，原来Markd">
+<meta name="description" content="为了方便测试一些命令和工具，在公司用VirtualBox安装了一个Ubuntu的Server版，Server版默认没有图像界面，跑起来对系统资源的占用比较少，很适合用于虚拟机，特别是在公司用了很多年的低配置电脑上。
+在公司上网需要通过代理，这里简要介绍一下Ubuntu几个可能需要设置代理的地方。
+设置apt.confUbuntu在安装时就会提示输入代理的设置，设置的代理保存在 /etc/apt/a">
 <meta property="og:type" content="article">
-<meta property="og:title" content="在Markdown的正文中使用尖括号">
-<meta property="og:url" content="https://zhgcao.github.io/2016/05/13/markdown-angle-brackets/index.html">
+<meta property="og:title" content="Ubuntu设置使用代理">
+<meta property="og:url" content="https://zhgcao.github.io/2016/06/02/ubuntu-use-proxy/index.html">
 <meta property="og:site_name" content="匿名">
-<meta property="og:description" content="今天用Markdown写一篇文章，里面用了一对尖括号，但在生成的网页中，却发现尖括号以及其中的内容均消失了，在尖括号前加反斜杠也无效，除非左尖括号后面跟的是中文。以下是几种示例：123例1：&amp;lt;not display&amp;gt;例2：\&amp;lt;not display\&amp;gt;例3：&amp;lt;中文可以显示&amp;gt;
-显示为：例1：例2：\例3：&amp;lt;中文可以显示&amp;gt;
-在网上查了一下，原来Markd">
-<meta property="og:updated_time" content="2016-05-13T08:08:55.000Z">
+<meta property="og:description" content="为了方便测试一些命令和工具，在公司用VirtualBox安装了一个Ubuntu的Server版，Server版默认没有图像界面，跑起来对系统资源的占用比较少，很适合用于虚拟机，特别是在公司用了很多年的低配置电脑上。
+在公司上网需要通过代理，这里简要介绍一下Ubuntu几个可能需要设置代理的地方。
+设置apt.confUbuntu在安装时就会提示输入代理的设置，设置的代理保存在 /etc/apt/a">
+<meta property="og:updated_time" content="2016-06-04T04:11:08.061Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在Markdown的正文中使用尖括号">
-<meta name="twitter:description" content="今天用Markdown写一篇文章，里面用了一对尖括号，但在生成的网页中，却发现尖括号以及其中的内容均消失了，在尖括号前加反斜杠也无效，除非左尖括号后面跟的是中文。以下是几种示例：123例1：&amp;lt;not display&amp;gt;例2：\&amp;lt;not display\&amp;gt;例3：&amp;lt;中文可以显示&amp;gt;
-显示为：例1：例2：\例3：&amp;lt;中文可以显示&amp;gt;
-在网上查了一下，原来Markd">
+<meta name="twitter:title" content="Ubuntu设置使用代理">
+<meta name="twitter:description" content="为了方便测试一些命令和工具，在公司用VirtualBox安装了一个Ubuntu的Server版，Server版默认没有图像界面，跑起来对系统资源的占用比较少，很适合用于虚拟机，特别是在公司用了很多年的低配置电脑上。
+在公司上网需要通过代理，这里简要介绍一下Ubuntu几个可能需要设置代理的地方。
+设置apt.confUbuntu在安装时就会提示输入代理的设置，设置的代理保存在 /etc/apt/a">
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> 在Markdown的正文中使用尖括号 | 匿名 </title>
+  <title> Ubuntu设置使用代理 | 匿名 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -233,7 +233,7 @@
             
             
               
-                在Markdown的正文中使用尖括号
+                Ubuntu设置使用代理
               
             
           </h1>
@@ -245,8 +245,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-13T15:33:32+08:00" content="2016-05-13">
-              2016-05-13
+            <time itemprop="dateCreated" datetime="2016-06-02T14:33:03+08:00" content="2016-06-02">
+              2016-06-02
             </time>
           </span>
 
@@ -272,14 +272,19 @@
       
 
       
-        <p>今天用Markdown写一篇文章，里面用了一对尖括号，但在生成的网页中，却发现尖括号以及其中的内容均消失了，在尖括号前加反斜杠也无效，除非左尖括号后面跟的是中文。<br>以下是几种示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例1：&lt;not display&gt;</span><br><span class="line">例2：\&lt;not display\&gt;</span><br><span class="line">例3：&lt;中文可以显示&gt;</span><br></pre></td></tr></table></figure></p>
-<p>显示为：<br>例1：<not display=""><br>例2：\<not display\=""><br>例3：&lt;中文可以显示&gt;</not></not></p>
-<p>在网上查了一下，原来Markdown为了兼容HTML，将尖括号都认为是HTML的语法来处理了，即便加反斜杠也没用。</p>
-<p>为解决这个问题，在正文中正常显示尖括号，可以用下面两种方式：</p>
-<p>一种是作为行内代码处理，在尖括号对前后各加一个反引号 “`”，如这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">例3：`&lt;display&gt;`</span><br></pre></td></tr></table></figure></p>
-<p>显示为：<br>例3：<code>&lt;display&gt;</code></p>
-<p>另一种是用转义字符来代替尖括号，左尖括号写<code>&amp;lt;</code>，右尖括号写<code>&amp;gt;</code>，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">例4：&amp;lt;display&amp;gt;</span><br></pre></td></tr></table></figure></p>
-<p>显示为：<br>例4：&lt;display&gt;</p>
+        <p>为了方便测试一些命令和工具，在公司用VirtualBox安装了一个Ubuntu的Server版，Server版默认没有图像界面，跑起来对系统资源的占用比较少，很适合用于虚拟机，特别是在公司用了很多年的低配置电脑上。</p>
+<p>在公司上网需要通过代理，这里简要介绍一下Ubuntu几个可能需要设置代理的地方。</p>
+<h2 id="设置apt-conf"><a href="#设置apt-conf" class="headerlink" title="设置apt.conf"></a>设置apt.conf</h2><p>Ubuntu在安装时就会提示输入代理的设置，设置的代理保存在 /etc/apt/apt.conf 文件里，文件内容格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Acquire::http::Proxy &quot;http://&lt;proxyserver&gt;:&lt;port&gt;/&quot;;</span><br></pre></td></tr></table></figure></p>
+<p>如果安装时没设置代理，或代理有变化，以后也可以编辑修改这个文件。</p>
+<p>这样设置后，apt-get就可以正常使用了。</p>
+<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h2><p>只设置apt.conf，wget或git等软件还是不能访问网络，这时可以再设置2个环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export http_proxy=http://&lt;proxyserver&gt;:&lt;port&gt;/</span></span><br><span class="line"><span class="comment"># export https_proxy=http://&lt;proxyserver&gt;:&lt;port&gt;/</span></span><br></pre></td></tr></table></figure></p>
+<p>或者将这2条命令添加到 ~/.bashrc 结尾。<br>如果访问的代理需要用户名和密码，上面的代理设置可以写成 <code>http://&lt;user&gt;:&lt;password&gt;@&lt;proxyserver&gt;:&lt;port&gt;/</code> 。<br>有了这两个环境变量，wget或git等命令就可以正常访问网络了。</p>
+<h2 id="wget的特殊设置"><a href="#wget的特殊设置" class="headerlink" title="wget的特殊设置"></a>wget的特殊设置</h2><p>对于wget，还可以编辑/etc/wgetrc，找到如下内容，去掉设置项前的<code>#</code>号并修改其中的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># You can set the default proxies for Wget to use for http, https, and ftp.</span><br><span class="line"># They will override the value in the environment.</span><br><span class="line">#https_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#http_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#ftp_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line"></span><br><span class="line"># If you do not want to use proxy at all, set this to off.</span><br><span class="line">#use_proxy = on</span><br></pre></td></tr></table></figure></p>
+<p>或者在主目录下新建一个文件 ~/.wgetrc，将上面那段内容复制过来并按实际修改。</p>
+<p>如果想临时使用一个代理，不想修改配置文件或设置环境变量，可以在wget命令中增加 <code>-e &quot;xxx&quot;</code> 选项，这个选项是执行一个wgetrc格式的命令。<br>命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget -e "use_proxy=on" -e "http_proxy=http://&lt;server&gt;:&lt;port&gt;/" &lt;url&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Git的特殊设置"><a href="#Git的特殊设置" class="headerlink" title="Git的特殊设置"></a>Git的特殊设置</h2><p>Git支持通过Git、SSH、HTTP/HTTPS协议，上面设置的环境变量，可以让Git通过HTTP/HTTPS协议访问远程仓库。</p>
+<p>除了设环境变量，Git也可以通过如下命令设置http的代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git config --global http.proxy http://proxyuser:proxypwd@proxy.server.com:port</span></span><br></pre></td></tr></table></figure></p>
+<p>如果要通过Git协议或SSH协议访问远程仓库，那设置就会比较复杂。</p>
 
       
     </div>
@@ -300,7 +305,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Markdown/" rel="tag">#Markdown</a>
+            <a href="/tags/Ubuntu/" rel="tag">#Ubuntu</a>
+          
+            <a href="/tags/Git/" rel="tag">#Git</a>
           
         </div>
       
@@ -309,16 +316,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/13/debian-install-sudo/" rel="next" title="Debian安装sudo">
-                <i class="fa fa-chevron-left"></i> Debian安装sudo
+              <a href="/2016/06/01/find-google-ip-ranges/" rel="next" title="如何查找Google的IP地址段">
+                <i class="fa fa-chevron-left"></i> 如何查找Google的IP地址段
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/05/26/ubuntu-install-net-speeder/" rel="prev" title="Ubuntu安装net-speeder">
-                Ubuntu安装net-speeder <i class="fa fa-chevron-right"></i>
+              <a href="/2016/06/04/64-27-year/" rel="prev" title="二十七年了">
+                二十七年了 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -428,7 +435,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置apt-conf"><span class="nav-number">1.</span> <span class="nav-text">设置apt.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置环境变量"><span class="nav-number">2.</span> <span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wget的特殊设置"><span class="nav-number">3.</span> <span class="nav-text">wget的特殊设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git的特殊设置"><span class="nav-number">4.</span> <span class="nav-text">Git的特殊设置</span></a></li></ol></div>
             
           </div>
         </section>

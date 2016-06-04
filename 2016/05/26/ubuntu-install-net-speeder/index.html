@@ -1,0 +1,590 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Ubuntu,Shadowsocks,net-speeder,BandwagonHost," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="介绍目前个人最主要的科学上网工具，就是部署在搬瓦工上的Shadowsocks了，一直能稳定使用，唯一的缺点是速度不够快，看youtube时经常需要中断缓冲一会，不是很爽。
+最近把搬瓦工上的系统更换了一下，重装了Shadowsocks，顺便研究了一下如何加速。
+目前在VPS上，比较常用的加速软件有3钟：锐速、FinalSpeed、net-speeder
+
+锐速是国内某公司出的商业软件，不开源，网上流">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu安装net-speeder">
+<meta property="og:url" content="https://zhgcao.github.io/2016/05/26/ubuntu-install-net-speeder/index.html">
+<meta property="og:site_name" content="匿名">
+<meta property="og:description" content="介绍目前个人最主要的科学上网工具，就是部署在搬瓦工上的Shadowsocks了，一直能稳定使用，唯一的缺点是速度不够快，看youtube时经常需要中断缓冲一会，不是很爽。
+最近把搬瓦工上的系统更换了一下，重装了Shadowsocks，顺便研究了一下如何加速。
+目前在VPS上，比较常用的加速软件有3钟：锐速、FinalSpeed、net-speeder
+
+锐速是国内某公司出的商业软件，不开源，网上流">
+<meta property="og:updated_time" content="2016-05-26T02:52:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ubuntu安装net-speeder">
+<meta name="twitter:description" content="介绍目前个人最主要的科学上网工具，就是部署在搬瓦工上的Shadowsocks了，一直能稳定使用，唯一的缺点是速度不够快，看youtube时经常需要中断缓冲一会，不是很爽。
+最近把搬瓦工上的系统更换了一下，重装了Shadowsocks，顺便研究了一下如何加速。
+目前在VPS上，比较常用的加速软件有3钟：锐速、FinalSpeed、net-speeder
+
+锐速是国内某公司出的商业软件，不开源，网上流">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Ubuntu安装net-speeder | 匿名 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">匿名</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">爱自由、爱爬墙</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Ubuntu安装net-speeder
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-26T08:37:10+08:00" content="2016-05-26">
+              2016-05-26
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>目前个人最主要的科学上网工具，就是部署在搬瓦工上的Shadowsocks了，一直能稳定使用，唯一的缺点是速度不够快，看youtube时经常需要中断缓冲一会，不是很爽。</p>
+<p>最近把搬瓦工上的系统更换了一下，重装了Shadowsocks，顺便研究了一下如何加速。</p>
+<p>目前在VPS上，比较常用的加速软件有3钟：锐速、FinalSpeed、net-speeder</p>
+<ol>
+<li>锐速是国内某公司出的商业软件，不开源，网上流传有破解版可用，但是，它只支持KVM架构的VPS，而我的廉价搬瓦工是OpenVZ架构的，不支持。</li>
+<li>FinalSpeed是开源的，项目地址：<a href="https://github.com/d1sm/finalspeed" title="Link to FinalSpeed" target="_blank" rel="external">FinalSpeed</a>，这个工具在使用时还需要装个客户端，否则没有任何加速效果，使用上不太方便。更关键的是，跑起来据说占用内存较大（可能因为是用JAVA开发的），作者特别提示搬瓦工至少需要256内存以上，而我的小VPS只有128M内存。</li>
+<li>net-speeder也是开源的，项目地址：<a href="https://github.com/snooda/net-speeder" title="Link to net-speeder" target="_blank" rel="external">net-speeder</a>，这个项目是用C写的，代码非常简单，只有100多行，加速的原理简单粗暴，就是所有满足条件的包全部发2遍，这种做法有点损人利己，会占用更多带宽并使得流量翻倍，不过在高丢包高延迟环境下会比较有效。</li>
+</ol>
+<p>受VPS的限制，可选的加速工具只有net-speeder。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>目前在VPS上装的系统是Ubuntu 15.10，在Ubuntu下安装net-speeder还是比较简单的。</p>
+<p>首先下载net-speeder的源码并解压，解压后有个路径net-speeder-master<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget https://github.com/snooda/net-speeder/archive/master.zip</span></span><br><span class="line"><span class="comment"># unzip master.zip</span></span><br><span class="line"><span class="comment"># cd net-speeder-master</span></span><br></pre></td></tr></table></figure></p>
+<p>如果解压时提示unzip命令没找到，需要先安装unzip<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install unzip</span></span><br></pre></td></tr></table></figure></p>
+<p>准备编译的环境，安装几个依赖的包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install libnet1-dev</span></span><br><span class="line"><span class="comment"># apt-get install libpcap0.8-dev</span></span><br></pre></td></tr></table></figure></p>
+<p>编译，因为VPS是OpenVZ架构的，需要加-DCOOKED参数，KVM的不用加<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sh build.sh -DCOOKED</span></span><br></pre></td></tr></table></figure></p>
+<p>编译后，当前目录下会有个net_speeder的可执行文件。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>执行net-speeder的命令格式：<code>./net_speeder 网卡名 加速规则（bpf规则）</code></p>
+<p>网卡名可以用ifconfig命令看到，我的VPS上显示有2个网卡名：venet0 和 venet0:0，从IP地址看，后面一个绑定的是实际的VPS外网IP。</p>
+<p>加速规则实际是个bpf规则，用来过滤哪些包需要发2遍，要了解更详细的bpf规则可以google一下。</p>
+<p>项目的作者推荐的加速规则如下，重发所有的ip包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "ip"</span></span><br></pre></td></tr></table></figure></p>
+<p>网上很多人推荐的加速规则如下，重发所有的tcp包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "tcp"</span></span><br></pre></td></tr></table></figure></p>
+<p>但这两种规则范围还是太大了，尤其是作者推荐的，把所有的ip包全部发2遍，这么玩感觉有点耍流氓了。</p>
+<p>而我的目的只需要给Shadowsocks加速，可以设定只加速Shadowsocks监听的端口，假设端口是8388，只加速这个端口的命令如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "tcp src port 8388"</span></span><br></pre></td></tr></table></figure></p>
+<p>假如需要给多个端口加速，命令可以写成：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "tcp src port 8388 or port 8389"</span></span><br></pre></td></tr></table></figure></p>
+<p>以后台方式执行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nohup ./net_speeder venet0:0 "tcp src port 8388" &gt;/dev/null 2&gt;&amp;1 &amp;</span></span><br></pre></td></tr></table></figure></p>
+<p>关闭net-speeder<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># killall net_speeder</span></span><br></pre></td></tr></table></figure></p>
+<p>把这个工具加入开机启动，先拷贝到/usr/bin目录下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cp ./net_speeder /usr/bin</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'nohup /usr/bin/net_speeder venet0:0 "tcp src port 8388" &gt;/dev/null 2&gt;&amp;1 &amp;'</span> &gt;&gt; /etc/rc.local</span><br></pre></td></tr></table></figure></p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>没详细测试加速前后下载等速度的差异，从youtube来看，效果还是非常明显的，youtube统计信息里的速度有了非常大的提升，缓存进度条跑的快了很多，一般视频都不会中断了。</p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Ubuntu/" rel="tag">#Ubuntu</a>
+          
+            <a href="/tags/Shadowsocks/" rel="tag">#Shadowsocks</a>
+          
+            <a href="/tags/net-speeder/" rel="tag">#net-speeder</a>
+          
+            <a href="/tags/BandwagonHost/" rel="tag">#BandwagonHost</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/13/markdown-angle-brackets/" rel="next" title="在Markdown的正文中使用尖括号">
+                <i class="fa fa-chevron-left"></i> 在Markdown的正文中使用尖括号
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/30/google-search-skill/" rel="prev" title="Google常用搜索技巧">
+                Google常用搜索技巧 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="匿名" />
+          <p class="site-author-name" itemprop="name">匿名</p>
+          <p class="site-description motion-element" itemprop="description">没有什么能够阻挡，你对自由的向往！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">4.</span> <span class="nav-text">效果</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">匿名</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
