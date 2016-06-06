@@ -259,6 +259,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -353,6 +354,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -368,17 +370,25 @@
           
             <p>为了方便测试一些命令和工具，在公司用VirtualBox安装了一个Ubuntu的Server版，Server版默认没有图像界面，跑起来对系统资源的占用比较少，很适合用于虚拟机，特别是在公司用了很多年的低配置电脑上。</p>
 <p>在公司上网需要通过代理，这里简要介绍一下Ubuntu几个可能需要设置代理的地方。</p>
-<h2 id="设置apt-conf"><a href="#设置apt-conf" class="headerlink" title="设置apt.conf"></a>设置apt.conf</h2><p>Ubuntu在安装时就会提示输入代理的设置，设置的代理保存在 /etc/apt/apt.conf 文件里，文件内容格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Acquire::http::Proxy &quot;http://&lt;proxyserver&gt;:&lt;port&gt;/&quot;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="设置apt-conf"><a href="#设置apt-conf" class="headerlink" title="设置apt.conf"></a>设置apt.conf</h2><p>Ubuntu在安装时就会提示输入代理的设置，设置的代理保存在 /etc/apt/apt.conf 文件里，文件内容格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Acquire::http::Proxy &quot;http://&lt;proxy.server&gt;:&lt;port&gt;/&quot;;</span><br></pre></td></tr></table></figure></p>
 <p>如果安装时没设置代理，或代理有变化，以后也可以编辑修改这个文件。</p>
 <p>这样设置后，apt-get就可以正常使用了。</p>
-<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h2><p>只设置apt.conf，wget或git等软件还是不能访问网络，这时可以再设置2个环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export http_proxy=http://&lt;proxyserver&gt;:&lt;port&gt;/</span></span><br><span class="line"><span class="comment"># export https_proxy=http://&lt;proxyserver&gt;:&lt;port&gt;/</span></span><br></pre></td></tr></table></figure></p>
-<p>或者将这2条命令添加到 ~/.bashrc 结尾。<br>如果访问的代理需要用户名和密码，上面的代理设置可以写成 <code>http://&lt;user&gt;:&lt;password&gt;@&lt;proxyserver&gt;:&lt;port&gt;/</code> 。<br>有了这两个环境变量，wget或git等命令就可以正常访问网络了。</p>
+<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h2><p>只设置apt.conf，wget或git等软件还是不能访问网络，这时可以再设置2个环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/</span></span><br><span class="line"><span class="comment"># export https_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/</span></span><br></pre></td></tr></table></figure></p>
+<p>或者将这2条命令添加到 ~/.bashrc 结尾。<br>如果访问的代理需要用户名和密码，上面的代理设置可以写成 <code>http://&lt;user&gt;:&lt;password&gt;@&lt;proxy.server&gt;:&lt;port&gt;/</code> 。<br>有了这两个环境变量，wget或git（通过http/https）等命令就可以正常访问网络了。</p>
 <h2 id="wget的特殊设置"><a href="#wget的特殊设置" class="headerlink" title="wget的特殊设置"></a>wget的特殊设置</h2><p>对于wget，还可以编辑/etc/wgetrc，找到如下内容，去掉设置项前的<code>#</code>号并修改其中的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># You can set the default proxies for Wget to use for http, https, and ftp.</span><br><span class="line"># They will override the value in the environment.</span><br><span class="line">#https_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#http_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#ftp_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line"></span><br><span class="line"># If you do not want to use proxy at all, set this to off.</span><br><span class="line">#use_proxy = on</span><br></pre></td></tr></table></figure></p>
 <p>或者在主目录下新建一个文件 ~/.wgetrc，将上面那段内容复制过来并按实际修改。</p>
-<p>如果想临时使用一个代理，不想修改配置文件或设置环境变量，可以在wget命令中增加 <code>-e &quot;xxx&quot;</code> 选项，这个选项是执行一个wgetrc格式的命令。<br>命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget -e "use_proxy=on" -e "http_proxy=http://&lt;server&gt;:&lt;port&gt;/" &lt;url&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="Git的特殊设置"><a href="#Git的特殊设置" class="headerlink" title="Git的特殊设置"></a>Git的特殊设置</h2><p>Git支持通过Git、SSH、HTTP/HTTPS协议，上面设置的环境变量，可以让Git通过HTTP/HTTPS协议访问远程仓库。</p>
-<p>除了设环境变量，Git也可以通过如下命令设置http的代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git config --global http.proxy http://proxyuser:proxypwd@proxy.server.com:port</span></span><br></pre></td></tr></table></figure></p>
-<p>如果要通过Git协议或SSH协议访问远程仓库，那设置就会比较复杂。</p>
+<p>如果想临时使用一个代理，不想修改配置文件或设置环境变量，可以在wget命令中增加 <code>-e &quot;xxx&quot;</code> 选项，这个选项是执行一个wgetrc格式的命令。<br>命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget -e "use_proxy=on" -e "http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/" &lt;url&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Git的特殊设置"><a href="#Git的特殊设置" class="headerlink" title="Git的特殊设置"></a>Git的特殊设置</h2><p>Git支持Git、SSH、HTTP/HTTPS三种协议访问远程仓库，3钟协议的远程仓库地址格式不同，以 GitHub 为例：<br>Git协议：<code>git://github.com/...</code><br>SSH协议：<code>git@github.com:...</code><br>HTTP/HTTPS协议：<code>http://github.com/...</code> 或 <code>https://github.com/...</code></p>
+<p>上面设置的环境变量，可以让Git使用HTTP/HTTPS协议通过代理访问远程仓库。</p>
+<p>除了设环境变量，Git也可以通过如下命令设置http的代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git config --global http.proxy http://&lt;user&gt;:&lt;password&gt;@&lt;proxy.server&gt;:&lt;port&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>如果要通过Git协议访问远程仓库，可以先安装一个软件 connect-proxy （其他发行版可能叫 proxy-connect）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sudo apt-get install connect-proxy</span></span><br></pre></td></tr></table></figure></p>
+<p>然后在 /usr/bin 下新建一个文件 httpproxywrapper ，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">connect -H &lt;proxy.server.com&gt;:&lt;port&gt; &quot;$@&quot;</span><br></pre></td></tr></table></figure></p>
+<p>上面的 -H 表示是Http代理，如果是socks代理，需要改为 -S。</p>
+<p>给 httpproxywrapper 设置可执行权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sudo chmod +x httpproxywrapper</span></span><br></pre></td></tr></table></figure></p>
+<p>然后设置 git 使用代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git config --global core.gitproxy /usr/bin/httpproxywrapper</span></span><br></pre></td></tr></table></figure></p>
+<p>或设置环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export GIT_PROXY_COMMAND="/usr/bin/httpproxywrapper"</span></span><br></pre></td></tr></table></figure></p>
+<p>这样设置，就可以用Git协议通过代理访问远程仓库了。</p>
+<p>至于Git的SSH协议，网上找了几种方法，但经测试均无法通过http代理访问远程仓库，猜测可能和公司的代理设置有关，就不折腾了。</p>
 
           
         
@@ -458,6 +468,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -557,6 +568,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -667,6 +679,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -786,6 +799,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -886,6 +900,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -986,6 +1001,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -1084,6 +1100,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -1198,6 +1215,7 @@
           
           
 
+          
         </div>
       </header>
     
@@ -1223,7 +1241,7 @@
 <p>显示如下：<br>访问<a href="https://github.com/" title="Link to GitHub" target="_blank" rel="external">GitHub</a></p>
 <p>链接的地址可以是站内的相对地址。</p>
 <h3 id="自动链接"><a href="#自动链接" class="headerlink" title="自动链接"></a>自动链接</h3><p>包括在一对尖括号里的地址或邮箱，也会被Markdown自动处理为链接。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">访问&lt;https://github.com/&gt;</span><br><span class="line">mailto: &lt;address@example.com&gt;</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：<br>访问<a href="https://github.com/" target="_blank" rel="external">https://github.com/</a><br>mailto: <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x61;&#100;&#x64;&#x72;&#x65;&#115;&#x73;&#64;&#x65;&#120;&#x61;&#x6d;&#x70;&#108;&#x65;&#x2e;&#x63;&#111;&#x6d;">&#x61;&#100;&#x64;&#x72;&#x65;&#115;&#x73;&#64;&#x65;&#120;&#x61;&#x6d;&#x70;&#108;&#x65;&#x2e;&#x63;&#111;&#x6d;</a></p>
+<p>显示效果如下：<br>访问<a href="https://github.com/" target="_blank" rel="external">https://github.com/</a><br>mailto: <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#97;&#100;&#100;&#x72;&#101;&#x73;&#115;&#x40;&#x65;&#120;&#97;&#109;&#112;&#108;&#101;&#x2e;&#99;&#x6f;&#109;">&#97;&#100;&#100;&#x72;&#101;&#x73;&#115;&#x40;&#x65;&#120;&#97;&#109;&#112;&#108;&#101;&#x2e;&#99;&#x6f;&#109;</a></p>
 <h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><p>在要引用文字的每行开头增加一个”&gt; “（大于号），注意和后面的内容要有空格，多个”&gt; “还可以实现嵌套引用。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">普通内容</span><br><span class="line">&gt; 引用内容</span><br><span class="line">&gt; &gt; 嵌套引用内容</span><br></pre></td></tr></table></figure></p>
 <p>显示效果如下：<br>普通内容</p>
 <blockquote>
@@ -1396,9 +1414,7 @@ print(&apos;hello world!&apos;)
         
 
         
-        <div class="links-of-blogroll motion-element">
-          
-        </div>
+        
 
       </section>
 
@@ -1435,8 +1451,9 @@ print(&apos;hello world!&apos;)
   </a>
 </div>
 
+        
 
-
+        
       </div>
     </footer>
 
