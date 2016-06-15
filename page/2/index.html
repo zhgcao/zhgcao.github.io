@@ -229,6 +229,298 @@
             
               
                 
+                <a class="post-title-link" href="/2016/05/10/ubuntu-install-shadowsocks/" itemprop="url">
+                  Ubuntu安装Shadowsocks
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-10T14:31:35+08:00" content="2016-05-10">
+              2016-05-10
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Shadowsocks可以说是我目前用过的最好的科学上网工具了，没有之一，从大约一年半前在搬瓦工上安装好Shadowsocks以来，这么长时间一直能稳定使用。</p>
+<p>搬瓦工上默认的系统是CentOS，以前在这上面装的Shadowsocks，最近计划把系统换成Ubuntu，先学习了解一下Ubuntu下如何安装Shadowsocks。</p>
+<p>Shadowsocks有多个版本，常用的有Libev、Python、Go等，以前在CentOS上装的是Libev版本，这次想试试Python版，Python版本可以通过配置文件同时打开多个端口。</p>
+<p><strong>注意以下几乎所有的命令都需要在root用户下执行，如果非root用户，需要在每条命令前加上<code>sudo</code>。</strong></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>Ununtu下安装Python版本的Shadowsocks其实挺简单，先执行如下命令安装pip和几个依赖的包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install python-pip python-gevent python-m2crypto</span></span><br></pre></td></tr></table></figure></p>
+<p>可能会顺带安装其他的一堆依赖的包，等全部安装完成后，就可以用pip来安装Shadowsocks：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip install shadowsocks</span></span><br></pre></td></tr></table></figure></p>
+<p>注意非root用户在命令前一定要加sudo，否则只会安装在用户的home目录下。</p>
+<p>安装成功的结果显示如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Downloading/unpacking shadowsocks</span><br><span class="line">  Downloading shadowsocks-2.8.2.tar.gz</span><br><span class="line">  Running setup.py (path:/tmp/pip-build-4KPgyg/shadowsocks/setup.py) egg_info <span class="keyword">for</span> package shadowsocks</span><br><span class="line"></span><br><span class="line">Installing collected packages: shadowsocks</span><br><span class="line">  Running setup.py install <span class="keyword">for</span> shadowsocks</span><br><span class="line"></span><br><span class="line">    Installing sslocal script to /usr/<span class="built_in">local</span>/bin</span><br><span class="line">    Installing ssserver script to /usr/<span class="built_in">local</span>/bin</span><br><span class="line">Successfully installed shadowsocks</span><br><span class="line">Cleaning up...</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，默认ssserver和sslocal这两个程序安装到了/usr/local/bin目录</p>
+<h2 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h2><p>执行下面命令在/etc目录下建立一个新目录：shadowsocks，并在其下创建一个文件：config.json：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mkdir /etc/shadowsocks</span></span><br><span class="line"><span class="comment"># vim /etc/shadowsocks/config.json</span></span><br></pre></td></tr></table></figure></p>
+<p>config.json的内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</span><br><span class="line">    &quot;server_port&quot;:8388,</span><br><span class="line">    &quot;password&quot;:&quot;your_password&quot;,</span><br><span class="line">    &quot;timeout&quot;:600,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>“server_port”和”password”可以根据自己的要求设定。</p>
+<p>如果需要同时开多个端口，config.json的内容可以设置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</span><br><span class="line">    &quot;port_password&quot;: &#123;</span><br><span class="line">        &quot;8388&quot;: &quot;your_password1&quot;,</span><br><span class="line">        &quot;8389&quot;: &quot;your_password2&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timeout&quot;:600,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>执行以下命令启动Shadowsocks服务器：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ssserver -c /etc/shadowsocks/config.json -d start </span></span><br><span class="line">INFO: loading config from /etc/shadowsocks/config.json</span><br><span class="line">2016-04-19 03:48:17 INFO     loading libcrypto from libcrypto.so.1.0.0</span><br><span class="line">started</span><br></pre></td></tr></table></figure></p>
+<p>命令中的<code>-d start</code>参数表示Shadowsocks以后台方式运行，所以需要root权限</p>
+<p>然后运行<code>netstat -anp</code>可以查看到Shadowsocks正监听在设置的端口。</p>
+<p>停止Shadowsocks执行如下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ssserver -c /etc/shadowsocks/config.json -d stop</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="设置为服务随系统启动"><a href="#设置为服务随系统启动" class="headerlink" title="设置为服务随系统启动"></a>设置为服务随系统启动</h2><p>执行下面的命令，创建shadowsocks.service文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vim /etc/systemd/system/shadowsocks.service</span></span><br></pre></td></tr></table></figure></p>
+<p>文件的内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">PIDFile=/run/shadowsocks/server.pid</span><br><span class="line">PermissionsStartOnly=true</span><br><span class="line">ExecStartPre=/bin/mkdir -p /run/shadowsocks</span><br><span class="line">ExecStartPre=/bin/chown root:root /run/shadowsocks</span><br><span class="line">ExecStart=/usr/local/bin/ssserver --pid-file /var/run/shadowsocks/server.pid -c /etc/shadowsocks/config.json -d start</span><br><span class="line">Restart=on-abort</span><br><span class="line">User=root</span><br><span class="line">Group=root</span><br><span class="line">UMask=0027</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></p>
+<p>设置文件权限：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># chmod 755 /etc/systemd/system/shadowsocks.service</span></span><br></pre></td></tr></table></figure></p>
+<p>启动服务，enable是将服务设为自动启动。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl start shadowsocks</span></span><br><span class="line"><span class="comment"># systemctl enable shadowsocks</span></span><br></pre></td></tr></table></figure></p>
+<p>查看服务状态：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl status shadowsocks</span></span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/05/04/markdown-simple-syntax/" itemprop="url">
+                  Markdown简单语法介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-04T11:18:47+08:00" content="2016-05-04">
+              2016-05-04
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Hexo搭建的论坛是用<a href="http://wowubuntu.com/markdown/" target="_blank" rel="external">Markdown</a>来写文档的，这是一种轻量级的「标记语言」，一般写个文档，了解下常用的几个语法就可以了。</p>
+<h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><p>标题可以用2钟方式，一钟是用”#“（井号），总共六级标题，分别在文字前用1到6个“#”号表示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 一级标题</span><br><span class="line">## 二级标题</span><br><span class="line">### 三级标题</span><br><span class="line">#### 四级标题</span><br><span class="line">##### 五级标题</span><br><span class="line">###### 六级标题</span><br></pre></td></tr></table></figure></p>
+<p>另一种是在文字的下面加”=”（等号）或”-“（减号），分别表示一级和二级标题。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">一级标题</span><br><span class="line">========</span><br><span class="line"></span><br><span class="line">二级标题</span><br><span class="line">--------</span><br></pre></td></tr></table></figure></p>
+<h2 id="粗体和斜体"><a href="#粗体和斜体" class="headerlink" title="粗体和斜体"></a>粗体和斜体</h2><p>斜体前后，各加一个”*“（星号）或”_“（下划线）表示，粗体前后，各加两个”*“（星号）或”_“（下划线）表示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">*斜体*</span><br><span class="line">**粗体**</span><br><span class="line">_斜体_</span><br><span class="line">__粗体__</span><br></pre></td></tr></table></figure></p>
+<p>显示如下：<br><em>斜体</em><br><strong>粗体</strong><br><em>斜体</em><br><strong>粗体</strong></p>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>链接分为<strong>行内式</strong>和<strong>参考式</strong>两种。</p>
+<p><strong>行内式</strong>用一对方括号包含显示的文字，紧接着一对圆括号放链接的地址和提示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">访问[GitHub](https://github.com/ &quot;Link to GitHub&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>显示如下：<br>访问<a href="https://github.com/" title="Link to GitHub" target="_blank" rel="external">GitHub</a></p>
+<p><strong>参考式</strong>用两对紧挨的方括号，第二个方括号放链接的ID，并在文章的其他地方定义这个ID的内容。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">访问[GitHub][link1]</span><br><span class="line"></span><br><span class="line">[link1]: https://github.com/  &quot;Link to GitHub&quot;</span><br></pre></td></tr></table></figure></p>
+<p>显示如下：<br>访问<a href="https://github.com/" title="Link to GitHub" target="_blank" rel="external">GitHub</a></p>
+<p>链接的地址可以是站内的相对地址。</p>
+<h3 id="自动链接"><a href="#自动链接" class="headerlink" title="自动链接"></a>自动链接</h3><p>包括在一对尖括号里的地址或邮箱，也会被Markdown自动处理为链接。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">访问&lt;https://github.com/&gt;</span><br><span class="line">mailto: &lt;address@example.com&gt;</span><br></pre></td></tr></table></figure></p>
+<p>显示效果如下：<br>访问<a href="https://github.com/" target="_blank" rel="external">https://github.com/</a><br>mailto: <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#x61;&#x64;&#100;&#114;&#101;&#x73;&#x73;&#x40;&#x65;&#120;&#x61;&#x6d;&#112;&#x6c;&#x65;&#46;&#99;&#111;&#109;">&#x61;&#x64;&#100;&#114;&#101;&#x73;&#x73;&#x40;&#x65;&#120;&#x61;&#x6d;&#112;&#x6c;&#x65;&#46;&#99;&#111;&#109;</a></p>
+<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><p>在要引用文字的每行开头增加一个”&gt; “（大于号），注意和后面的内容要有空格，多个”&gt; “还可以实现嵌套引用。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">普通内容</span><br><span class="line">&gt; 引用内容</span><br><span class="line">&gt; &gt; 嵌套引用内容</span><br></pre></td></tr></table></figure></p>
+<p>显示效果如下：<br>普通内容</p>
+<blockquote>
+<p>引用内容</p>
+<blockquote>
+<p>嵌套引用内容</p>
+</blockquote>
+</blockquote>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>行内的代码，可以在前后各加一个”`“（反引号）来表示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">使用命令 `pip install -U pip` 来更新pip。</span><br></pre></td></tr></table></figure></p>
+<p>显示效果如下：<br>使用命令 <code>pip install -U pip</code> 来更新pip。</p>
+<p>大段的代码，可以是在每行的开头增加4个空格或一个制表符。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">普通内容</span><br><span class="line">    #!/usr/bin/python</span><br><span class="line">    print(&apos;hello world!&apos;)</span><br></pre></td></tr></table></figure></p>
+<p>显示效果如下：<br>普通内容</p>
+<pre><code>#!/usr/bin/python
+print(&apos;hello world!&apos;)    
+</code></pre><p>或者在代码前后各加一行，写三个”`“（反引号），如” ``` “。<br>在开头的三个反引号后面，还可以写代码的类型，实现语法高亮，如” ``` python “。</p>
+<p>语法参考如下：</p>
+<blockquote>
+<p>```  python</p>
+<p>#!/usr/bin/python<br>print(‘hello world!’)<br>```</p>
+</blockquote>
+<p>显示效果如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line">print(<span class="string">'hello world!'</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>在文档中添加图片的语法和链接的语法很像，也分为行内式和参考式，和链接的区别是在前面增加了一个”!”（惊叹号）。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">这是一个行内式添加的图片：![64 fire](/images/64_fire.jpg &quot;64 fire&quot;)</span><br><span class="line">这是一个链接式添加的图片：![64 fire][pic-1]</span><br><span class="line"></span><br><span class="line">[pic-1]: /images/64_fire.jpg &quot;64 fire&quot;</span><br></pre></td></tr></table></figure></p>
+<p>显示效果如下：<br>这是一个行内式添加的图片：<img src="/images/64_fire.jpg" alt="64 fire" title="64 fire"><br>这是一个链接式添加的图片：<img src="/images/64_fire.jpg" alt="64 fire" title="64 fire"></p>
+<h2 id="分隔线"><a href="#分隔线" class="headerlink" title="分隔线"></a>分隔线</h2><p>在一行中用三个以上的星号、减号、底线来建立一个分隔线，行内不能有其他东西，中间可以插入空格<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">***</span><br><span class="line">* * *</span><br><span class="line">*********</span><br><span class="line">- - -</span><br><span class="line">_________</span><br></pre></td></tr></table></figure></p>
+<p>上面几种显示效果均一样，如下：</p>
+<hr>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><p>Markdown 支持有序列表和无序列表。</p>
+<p>无序列表使用星号、加号或是减号作为列表标记<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">* 项目1</span><br><span class="line">* 项目2</span><br><span class="line">* 项目3</span><br><span class="line"></span><br><span class="line">或</span><br><span class="line"></span><br><span class="line">+ 项目1</span><br><span class="line">+ 项目2</span><br><span class="line">+ 项目3</span><br><span class="line"></span><br><span class="line">或</span><br><span class="line"></span><br><span class="line">- 项目1</span><br><span class="line">- 项目2</span><br><span class="line">- 项目3</span><br></pre></td></tr></table></figure></p>
+<p>上面三种，显示效果均一样，如下：</p>
+<ul>
+<li>项目1</li>
+<li>项目2</li>
+<li>项目3</li>
+</ul>
+<p>有序列表使用数字加一个英文句点作为列表标记。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 项目1</span><br><span class="line">2. 项目2</span><br><span class="line">3. 项目3</span><br></pre></td></tr></table></figure></p>
+<p>显示效果如下：</p>
+<ol>
+<li>项目1</li>
+<li>项目2</li>
+<li>项目3</li>
+</ol>
+<p>事实上，数字的值并不重要，如以下2种写法，显示效果均和前面一样，序号都从1开始顺序排列。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 项目1</span><br><span class="line">1. 项目2</span><br><span class="line">1. 项目3</span><br><span class="line"></span><br><span class="line">或</span><br><span class="line"></span><br><span class="line">3. 项目1</span><br><span class="line">9. 项目2</span><br><span class="line">6. 项目3</span><br></pre></td></tr></table></figure></p>
+<p>不过第一个项目的序号最好是1，因为Markdown以后可能会支持有序列表的start属性。</p>
+<p>如果项目的信息有多行文字，为了美观可以在前面最多加3个空格保持缩进，也可以偷懒不加空格，如以下写法均可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* 项目1</span><br><span class="line">  项目1-1</span><br><span class="line">* 项目2</span><br><span class="line">项目2-1</span><br><span class="line">* 项目3</span><br></pre></td></tr></table></figure></p>
+<p>如果一段文字以数字加一个点开头，但不想让其变成一个有序列表，可以在点前加个反斜杠，无序列表的符号也是如此，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1989\. this is s ...</span><br><span class="line">\* this is s ...</span><br></pre></td></tr></table></figure></p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>Markdown使用管线图的方式实现表格，如下表示一个简单的表格，注意表格的开头要空一行。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">标题1 | 标题2 | 标题3</span><br><span class="line">:-----|-----:|:-----:</span><br><span class="line">行1-内容1 | 行1-内容2 | 行1-内容3</span><br><span class="line">行2-内容1 | 行2-内容2 | 行2-内容3</span><br></pre></td></tr></table></figure></p>
+<p>显示效果如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">标题1</th>
+<th style="text-align:right">标题2</th>
+<th style="text-align:center">标题3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">行1-内容1</td>
+<td style="text-align:right">行1-内容2</td>
+<td style="text-align:center">行1-内容3</td>
+</tr>
+<tr>
+<td style="text-align:left">行2-内容1</td>
+<td style="text-align:right">行2-内容2</td>
+<td style="text-align:center">行2-内容3</td>
+</tr>
+</tbody>
+</table>
+<p>注意上面第二行中的冒号，表示几种不同的对齐方式</p>
+<p>为了美观，写的时候也可以尽量对齐，并在前后各加个”|”（下划线），如下面的写法，显示效果和前面一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">| 标题1     | 标题2     | 标题3     |</span><br><span class="line">|:----------|----------:|:---------:|</span><br><span class="line">| 行1-内容1 | 行1-内容2 | 行1-内容3 |</span><br><span class="line">| 行2-内容1 | 行2-内容2 | 行2-内容3 |</span><br></pre></td></tr></table></figure></p>
+<h2 id="反斜杠"><a href="#反斜杠" class="headerlink" title="反斜杠"></a>反斜杠</h2><p>如果需要在文档中显示一下Markdown语法相关的字符，不希望Markdown将其按语法字符处理，可以在前面增加一个反斜杠，在前面的介绍列表时已经有这样的用法。</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/03/python-pip-simply-usage/" itemprop="url">
                   python pip的简单用法
                 </a>
@@ -804,7 +1096,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -814,7 +1106,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

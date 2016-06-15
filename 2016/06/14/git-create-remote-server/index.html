@@ -80,22 +80,22 @@
 
 
 
-<meta name="description" content="公司的开发从SVN切换到Git，在SVN下，可以很方便的只获取版本库中一个或多个目录的内容，但是Git的克隆，默认是直接拉取整个远程仓库，如果项目比较大，大量和自己无关的内容也会拉到本地，占用很多硬盘空间。
-在网上搜了一下，Git在1.7版本后，已经支持只Checkout部分内容，这个功能叫做 sparse checkout（稀疏检出）。
-打开 sparse checkout 功能如果本地还没有建">
+<meta name="description" content="用Git做代码控制时，除了放在GitHub这类公开的远程仓库，还可以很方便的自己建个远程仓库玩。
+准备找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：1$ sudo adduser git
+如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 /home/git/.ssh/authorized_key">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git只获取部分目录的内容（稀疏检出）">
-<meta property="og:url" content="https://zhgcao.github.io/2016/05/11/git-sparse-checkout/index.html">
+<meta property="og:title" content="git自建远程仓库">
+<meta property="og:url" content="https://zhgcao.github.io/2016/06/14/git-create-remote-server/index.html">
 <meta property="og:site_name" content="匿名">
-<meta property="og:description" content="公司的开发从SVN切换到Git，在SVN下，可以很方便的只获取版本库中一个或多个目录的内容，但是Git的克隆，默认是直接拉取整个远程仓库，如果项目比较大，大量和自己无关的内容也会拉到本地，占用很多硬盘空间。
-在网上搜了一下，Git在1.7版本后，已经支持只Checkout部分内容，这个功能叫做 sparse checkout（稀疏检出）。
-打开 sparse checkout 功能如果本地还没有建">
-<meta property="og:updated_time" content="2016-06-08T02:37:22.924Z">
+<meta property="og:description" content="用Git做代码控制时，除了放在GitHub这类公开的远程仓库，还可以很方便的自己建个远程仓库玩。
+准备找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：1$ sudo adduser git
+如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 /home/git/.ssh/authorized_key">
+<meta property="og:updated_time" content="2016-06-15T08:31:15.370Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Git只获取部分目录的内容（稀疏检出）">
-<meta name="twitter:description" content="公司的开发从SVN切换到Git，在SVN下，可以很方便的只获取版本库中一个或多个目录的内容，但是Git的克隆，默认是直接拉取整个远程仓库，如果项目比较大，大量和自己无关的内容也会拉到本地，占用很多硬盘空间。
-在网上搜了一下，Git在1.7版本后，已经支持只Checkout部分内容，这个功能叫做 sparse checkout（稀疏检出）。
-打开 sparse checkout 功能如果本地还没有建">
+<meta name="twitter:title" content="git自建远程仓库">
+<meta name="twitter:description" content="用Git做代码控制时，除了放在GitHub这类公开的远程仓库，还可以很方便的自己建个远程仓库玩。
+准备找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：1$ sudo adduser git
+如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 /home/git/.ssh/authorized_key">
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> Git只获取部分目录的内容（稀疏检出） | 匿名 </title>
+  <title> git自建远程仓库 | 匿名 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -233,7 +233,7 @@
             
             
               
-                Git只获取部分目录的内容（稀疏检出）
+                git自建远程仓库
               
             
           </h1>
@@ -245,8 +245,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-11T10:53:47+08:00" content="2016-05-11">
-              2016-05-11
+            <time itemprop="dateCreated" datetime="2016-06-14T10:34:23+08:00" content="2016-06-14">
+              2016-06-14
             </time>
           </span>
 
@@ -273,19 +273,22 @@
       
 
       
-        <p>公司的开发从SVN切换到Git，在SVN下，可以很方便的只获取版本库中一个或多个目录的内容，但是Git的克隆，默认是直接拉取整个远程仓库，如果项目比较大，大量和自己无关的内容也会拉到本地，占用很多硬盘空间。</p>
-<p>在网上搜了一下，Git在1.7版本后，已经支持只Checkout部分内容，这个功能叫做 sparse checkout（稀疏检出）。</p>
-<h2 id="打开-sparse-checkout-功能"><a href="#打开-sparse-checkout-功能" class="headerlink" title="打开 sparse checkout 功能"></a>打开 sparse checkout 功能</h2><p>如果本地还没有建版本库，要用这个功能，先进入要放版本库的目录，在命令行执行几条命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git init &lt;project&gt;</span><br><span class="line">$ <span class="built_in">cd</span> &lt;project&gt;</span><br><span class="line">$ git remote add origin ssh://&lt;user&gt;@&lt;repository<span class="string">'s url&gt;</span><br><span class="line">$ git config core.sparsecheckout true</span><br><span class="line">$ echo "path1/" &gt;&gt; .git/info/sparse-checkout</span><br><span class="line">$ echo "path2/" &gt;&gt; .git/info/sparse-checkout</span><br><span class="line">$ git pull origin master</span></span><br></pre></td></tr></table></figure></p>
-<p>第一条命令<code>git init &lt;project&gt;</code>，先建立一个空的版本库，用实际的目录名替代<project>。<br>第二条命令<code>cd &lt;project&gt;</code>，进入创建的新的版本库的目录。<br>第三条命令<code>git remote add origin ssh://&lt;user&gt;@&lt;repository&#39;s url&gt;</code>，添加远程库的地址。<br>第四条命令<code>git config core.sparsecheckout true</code>，打开sparse checkout功能。<br>第五第六条命令<code>echo &quot;path1/&quot; &gt;&gt; .git/info/sparse-checkout</code>，添加2个目录到checkout的列表。路径是版本库下的相对路径，也可以用文本编辑器编辑这个文件。<br>第七条命令<code>git pull origin master</code>，拉取远程的 master 分支，也可以拉其他分支。</project></p>
-<p>如果只拉取最近一次的变更，忽略以前的变更记录，在拉取时可以加参数depth，如<code>git pull --depth=1 origin master</code>  （浅克隆）</p>
-<p>如果以后修改了 .git/info/sparse-checkout，增加或删除部分目录，可以执行如下命令重新Checkout<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout master</span><br></pre></td></tr></table></figure></p>
-<p>或执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">read</span>-tree -mu HEAD</span><br></pre></td></tr></table></figure></p>
-<p>如果本地已经建了版本库，要使用这个功能，可以进入版本库的目录，执行以下命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git config core.sparsecheckout <span class="literal">true</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"path1/"</span> &gt;&gt; .git/info/sparse-checkout</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"path2/"</span> &gt;&gt; .git/info/sparse-checkout</span><br><span class="line">$ git checkout master</span><br></pre></td></tr></table></figure></p>
-<p>要关闭 sparse checkout功 能，仅仅修改设置，将core.sparsecheckout设为false是不生效的，需要修改 .git/info/sparse-checkout 文件，用一个”*“号替代其中的内容，然后执行 checkout 或 read-tree 命令。</p>
-<h2 id="sparse-checkout-文件设置"><a href="#sparse-checkout-文件设置" class="headerlink" title="sparse-checkout 文件设置"></a>sparse-checkout 文件设置</h2><p>子目录的匹配<br>在 sparse-checkout 文件中，如果目录名称前带斜杠，如<code>/docs/</code>，将只匹配项目根目录下的docs目录，如果目录名称前不带斜杠，如<code>docs/</code>，其他目录下如果也有这个名称的目录，如<code>test/docs/</code>也能被匹配。<br>而如果写了多级目录，如<code>docs/05/</code>，则不管前面是否带有斜杠，都只匹配项目根目录下的目录，如<code>test/docs/05/</code>不能被匹配。</p>
-<p>通配符 “*“ (星号)<br>在 sparse-checkout 文件中，支持通配符 “*“，如可以写成以下格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">*docs/</span><br><span class="line">index.*</span><br><span class="line">*.gif</span><br></pre></td></tr></table></figure></p>
-<p>排除项 “!” (感叹号)<br>在 sparse-checkout 文件中，也支持排除项 “!”，如只想排除排除项目下的 “docs” 目录，可以按如下格式写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">!/docs/</span><br></pre></td></tr></table></figure></p>
-<p>要注意一点：如果要关闭sparsecheckout功能，全取整个项目库，可以写一个”*“号，但如果有排除项，必须写”/*“，同时排除项要写在通配符后面。</p>
+        <p>用Git做代码控制时，除了放在GitHub这类公开的远程仓库，还可以很方便的自己建个远程仓库玩。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo adduser git</span><br></pre></td></tr></table></figure></p>
+<p>如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 <code>/home/git/.ssh/authorized_keys</code>，一行一条。</p>
+<p>为了安全，也可以限制 git 用户登录 shell，编辑 <code>/etc/passwd</code>，找到以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git:x:1001:1001:,,,:/home/git:/bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>把 <code>/bin/bash</code> 修改为 <code>/usr/bin/git-shell</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell</span><br></pre></td></tr></table></figure></p>
+<p>git-shell一登录就会立即退出。</p>
+<h2 id="新建远程仓库"><a href="#新建远程仓库" class="headerlink" title="新建远程仓库"></a>新建远程仓库</h2><p>远程仓库通常只需要做版本控制，不需要在上面直接修改提交代码，因此可以创建一个裸仓库，裸仓库没有工作区。<br>找一个放仓库的目录，如 <code>/home/git</code>，在这个目录下执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo git init --bare sample.git</span><br></pre></td></tr></table></figure></p>
+<p>sample可以根据实际修改为自己想要的名称，git远程仓库往往以<code>.git</code>为后缀，上面的命令会建立一个空的仓库，目录名为sample.git。</p>
+<p>把目录的所有者改为git<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chown -R git:git sample.git</span><br></pre></td></tr></table></figure></p>
+<p>至此远程仓库就建好了，在其他电脑，可以直接clone这个仓库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git@&lt;remote server ip&gt;:/home/git/sample</span><br></pre></td></tr></table></figure></p>
+<h2 id="一个本地库关联多个远程库"><a href="#一个本地库关联多个远程库" class="headerlink" title="一个本地库关联多个远程库"></a>一个本地库关联多个远程库</h2><p>公司正式项目的远程仓库需要做每日构建，对提交的代码有一定的要求，必须要功能完备没有编译错误才能提交，同时还限制了在远程仓库上创建分支。如果有个功能需要多人来协作开发，就可以用多个远程库的方式，在功能还未开发完时在团队内同步代码。<br>自建的远程库可以克隆自项目原来的库，如执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> --bare -b &lt;branch&gt; --depth 1 &lt;project url&gt; [&lt;<span class="built_in">local</span> dir&gt;]</span><br></pre></td></tr></table></figure></p>
+<p>和上面新建一样，<code>--bare</code>表示这是一个没有工作区的裸仓库。<br>如果项目库有多个分支，<code>-b &lt;branch&gt;</code> 表示只克隆某个分支，不需要将全库克隆下来。<br><code>--depth 1</code> 表示是浅克隆，只克隆最新的变更记录，其他不克隆。<br><code>&lt;project url&gt;</code> 是项目远程仓库的地址，<code>&lt;local dir&gt;</code> 为本地目录，可选。</p>
+<p>克隆后，同样把所有者改为git用户<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chown -R git:git &lt;<span class="built_in">local</span> dir&gt;</span><br></pre></td></tr></table></figure></p>
+<p>团队成员，在自己机器的本地库上，添加新的远程库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote add origin2 git@&lt;team server ip&gt;:/home/git/sample</span><br></pre></td></tr></table></figure></p>
+<p>远程库的名称默认是origin，为了和原有的远程库区分开，这里把新增的远程库命名为origin2</p>
+<p>添加后，这个本地库就关联了2个远程库，代码可以先提交到团队自己的远程库，其他人就能通过拉取这个远程仓库及时获取他人的开发内容，待功能全部完成后再一次性提交到项目正式的远程库。<br>从新建的远程库拉取和提交修改：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git pull origin2 master</span><br><span class="line">$ git push origin2 master</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -315,17 +318,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/10/ubuntu-install-shadowsocks/" rel="next" title="Ubuntu安装Shadowsocks">
-                <i class="fa fa-chevron-left"></i> Ubuntu安装Shadowsocks
+              <a href="/2016/06/09/nginx-reverse-proxy-google/" rel="next" title="利用Nginx反向代理谷歌">
+                <i class="fa fa-chevron-left"></i> 利用Nginx反向代理谷歌
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/05/13/debian-install-sudo/" rel="prev" title="Debian安装sudo">
-                Debian安装sudo <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -432,7 +431,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#打开-sparse-checkout-功能"><span class="nav-number">1.</span> <span class="nav-text">打开 sparse checkout 功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sparse-checkout-文件设置"><span class="nav-number">2.</span> <span class="nav-text">sparse-checkout 文件设置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备"><span class="nav-number">1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建远程仓库"><span class="nav-number">2.</span> <span class="nav-text">新建远程仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个本地库关联多个远程库"><span class="nav-number">3.</span> <span class="nav-text">一个本地库关联多个远程库</span></a></li></ol></div>
             
           </div>
         </section>

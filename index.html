@@ -229,6 +229,241 @@
             
               
                 
+                <a class="post-title-link" href="/2016/06/14/git-create-remote-server/" itemprop="url">
+                  git自建远程仓库
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-14T10:34:23+08:00" content="2016-06-14">
+              2016-06-14
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>用Git做代码控制时，除了放在GitHub这类公开的远程仓库，还可以很方便的自己建个远程仓库玩。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo adduser git</span><br></pre></td></tr></table></figure></p>
+<p>如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 <code>/home/git/.ssh/authorized_keys</code>，一行一条。</p>
+<p>为了安全，也可以限制 git 用户登录 shell，编辑 <code>/etc/passwd</code>，找到以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git:x:1001:1001:,,,:/home/git:/bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>把 <code>/bin/bash</code> 修改为 <code>/usr/bin/git-shell</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell</span><br></pre></td></tr></table></figure></p>
+<p>git-shell一登录就会立即退出。</p>
+<h2 id="新建远程仓库"><a href="#新建远程仓库" class="headerlink" title="新建远程仓库"></a>新建远程仓库</h2><p>远程仓库通常只需要做版本控制，不需要在上面直接修改提交代码，因此可以创建一个裸仓库，裸仓库没有工作区。<br>找一个放仓库的目录，如 <code>/home/git</code>，在这个目录下执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo git init --bare sample.git</span><br></pre></td></tr></table></figure></p>
+<p>sample可以根据实际修改为自己想要的名称，git远程仓库往往以<code>.git</code>为后缀，上面的命令会建立一个空的仓库，目录名为sample.git。</p>
+<p>把目录的所有者改为git<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chown -R git:git sample.git</span><br></pre></td></tr></table></figure></p>
+<p>至此远程仓库就建好了，在其他电脑，可以直接clone这个仓库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git@&lt;remote server ip&gt;:/home/git/sample</span><br></pre></td></tr></table></figure></p>
+<h2 id="一个本地库关联多个远程库"><a href="#一个本地库关联多个远程库" class="headerlink" title="一个本地库关联多个远程库"></a>一个本地库关联多个远程库</h2><p>公司正式项目的远程仓库需要做每日构建，对提交的代码有一定的要求，必须要功能完备没有编译错误才能提交，同时还限制了在远程仓库上创建分支。如果有个功能需要多人来协作开发，就可以用多个远程库的方式，在功能还未开发完时在团队内同步代码。<br>自建的远程库可以克隆自项目原来的库，如执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> --bare -b &lt;branch&gt; --depth 1 &lt;project url&gt; [&lt;<span class="built_in">local</span> dir&gt;]</span><br></pre></td></tr></table></figure></p>
+<p>和上面新建一样，<code>--bare</code>表示这是一个没有工作区的裸仓库。<br>如果项目库有多个分支，<code>-b &lt;branch&gt;</code> 表示只克隆某个分支，不需要将全库克隆下来。<br><code>--depth 1</code> 表示是浅克隆，只克隆最新的变更记录，其他不克隆。<br><code>&lt;project url&gt;</code> 是项目远程仓库的地址，<code>&lt;local dir&gt;</code> 为本地目录，可选。</p>
+<p>克隆后，同样把所有者改为git用户<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chown -R git:git &lt;<span class="built_in">local</span> dir&gt;</span><br></pre></td></tr></table></figure></p>
+<p>团队成员，在自己机器的本地库上，添加新的远程库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote add origin2 git@&lt;team server ip&gt;:/home/git/sample</span><br></pre></td></tr></table></figure></p>
+<p>远程库的名称默认是origin，为了和原有的远程库区分开，这里把新增的远程库命名为origin2</p>
+<p>添加后，这个本地库就关联了2个远程库，代码可以先提交到团队自己的远程库，其他人就能通过拉取这个远程仓库及时获取他人的开发内容，待功能全部完成后再一次性提交到项目正式的远程库。<br>从新建的远程库拉取和提交修改：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git pull origin2 master</span><br><span class="line">$ git push origin2 master</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/06/09/nginx-reverse-proxy-google/" itemprop="url">
+                  利用Nginx反向代理谷歌
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-09T11:23:56+08:00" content="2016-06-09">
+              2016-06-09
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>自从谷歌被墙，虽然在家可以翻墙访问，但在公司翻墙不方便，只能在网上找谷歌镜像站（镜像站是通俗叫法，更准确的叫法是反向代理）。但这些找来的镜像站往往不太稳定，经常过一段时间就不能访问甚至也会被墙，所以想着要搭个个人自用的反向代理。</p>
+<h2 id="搭反向代理需要的条件"><a href="#搭反向代理需要的条件" class="headerlink" title="搭反向代理需要的条件"></a>搭反向代理需要的条件</h2><ul>
+<li><p>一个墙外的VPS<br>对VPS的要求不高，搬瓦工128m内存的小机，搭建及使用均毫无压力。</p>
+</li>
+<li><p>一个域名<br>网上有很多地方可以申请免费的域名，比如<a href="http://www.freenom.com/" target="_blank" rel="external">Freenom</a>，可以免费申请.tk、.ml、.cf、.ga等后缀的顶级域名，最长一年免费，到期可以免费续期。</p>
+</li>
+<li><p>域名的SSL证书<br>其实反向代理本身是不需要SSL证书的，但如果没有证书只用http，仍然会被墙检测到搜索的内容，也就非常容易被拦截甚至被封IP，所以，反代谷歌最好有SSL证书，用https协议来访问。<br>网上能免费申请SSL证书的地方不多，推荐<a href="https://www.startssl.com/" target="_blank" rel="external">StartSSL</a>，也是最长一年免费，到期再免费续期。申请SSL证书的步骤比较麻烦，可以看看这个教程：<a href="http://www.freehao123.com/startssl-ssl-apache-ngnix/" target="_blank" rel="external">新StartSSL免费SSL证书申请使用</a>。</p>
+</li>
+</ul>
+<h2 id="安装并编译Nginx"><a href="#安装并编译Nginx" class="headerlink" title="安装并编译Nginx"></a>安装并编译Nginx</h2><p>Nginx自身就支持反向代理功能，但为了更好的反代谷歌，还需要至少一个第三方模块，Nginx加入第三方模块相对有点麻烦，需要下载源码重新编译。<br>这次折腾编译Nginx，参考了些网上的教程，但没有完全按照教程，步骤稍有点多，主要想尽量保留原有发行版的功能，以备以后用Nginx做其他用途。</p>
+<p>以下命令全是在Ubuntu上执行，CentOs的命令不一样，用户默认为root，非root用户很多命令需要加sudo。</p>
+<p>先安装需要用到的一些包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get update</span></span><br><span class="line"><span class="comment"># apt-get install libpcre3 libpcre3-dev</span></span><br><span class="line"><span class="comment"># apt-get install zlib1g zlib1g-dev openssl libssl-dev</span></span><br><span class="line"><span class="comment"># apt-get install libxml2 libxml2-dev libxslt1-dev</span></span><br><span class="line"><span class="comment"># apt-get install libgd-dev libgeoip-dev</span></span><br><span class="line"><span class="comment"># apt-get install -y gcc g++ make automake</span></span><br></pre></td></tr></table></figure></p>
+<p>安装Nginx的发行版<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install nginx</span></span><br></pre></td></tr></table></figure></p>
+<p>查看发行版的版本号和编译参数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nginx -V</span></span><br><span class="line">nginx version: nginx/1.9.3 (Ubuntu)</span><br><span class="line">built with OpenSSL 1.0.2d 9 Jul 2015</span><br><span class="line">TLS SNI support enabled</span><br><span class="line">configure arguments: --with-cc-opt=<span class="string">'-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2'</span> --with-ld-opt=<span class="string">'-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now'</span> --prefix=/usr/share/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/var/lib/nginx/body --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --http-proxy-temp-path=/var/lib/nginx/proxy --http-scgi-temp-path=/var/lib/nginx/scgi --http-uwsgi-temp-path=/var/lib/nginx/uwsgi --with-debug --with-pcre-jit --with-ipv6 --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_spdy_module --with-http_sub_module --with-http_xslt_module --with-mail --with-mail_ssl_module</span><br></pre></td></tr></table></figure></p>
+<p>从上面的信息可以看到当前安装的是1.9.3版本，configure arguments后面跟的一长串是发行版的编译参数，很重要，后面需要用到。</p>
+<p>找一个目录放源码，在这个目录里下载对应版本的Nginx源码并解压：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget http://nginx.org/download/nginx-1.9.3.tar.gz</span></span><br><span class="line"><span class="comment"># tar -zxvf nginx-1.9.3.tar.gz</span></span><br></pre></td></tr></table></figure></p>
+<p>为了在反代时，更好的替换原网页中的信息，需要在编译时增加一个第三方模块：<a href="https://github.com/yaoweibin/ngx_http_substitutions_filter_module" target="_blank" rel="external">substitutions 扩展</a><br>下载 substitutions 的源码<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module</span></span><br></pre></td></tr></table></figure></p>
+<p>下载后，会在当前目录下有个 ngx_http_substitutions_filter_module 目录</p>
+<p>另一个用于便捷配置反代Google的第三方模块：<a href="https://github.com/cuber/ngx_http_google_filter_module" target="_blank" rel="external">ngx_http_google_filter_module</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/cuber/ngx_http_google_filter_module</span><br></pre></td></tr></table></figure></p>
+<p>下载后，会在当前目录下有个 ngx_http_google_filter_module 目录，这个模块可选，增加后在Nginx配置文件中可以很简单的反代google</p>
+<p>进入Nginx源码的目录，设置编译参数，其实就是在原发行版的编译参数后，增加两个<code>--add-module=../xxx</code>，把两个第三方模块包括进来。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cd nginx-1.9.3</span></span><br><span class="line"><span class="comment"># ./configure \</span></span><br><span class="line">&gt; --with-cc-opt=<span class="string">'-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2'</span> --with-ld-opt=<span class="string">'-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now'</span> --prefix=/usr/share/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/var/lib/nginx/body --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --http-proxy-temp-path=/var/lib/nginx/proxy --http-scgi-temp-path=/var/lib/nginx/scgi --http-uwsgi-temp-path=/var/lib/nginx/uwsgi --with-debug --with-pcre-jit --with-ipv6 --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_spdy_module --with-http_sub_module --with-http_xslt_module --with-mail --with-mail_ssl_module \</span><br><span class="line">&gt; --add-module=../ngx_http_substitutions_filter_module \</span><br><span class="line">&gt; --add-module=../ngx_http_google_filter_module</span><br></pre></td></tr></table></figure></p>
+<p>设置后，会开始检查这些编译参数和环境，如果上面少安装了某些包，或更新的版本需要其他的包，就会报错，如少安装了libgeoip-dev，会报如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure: error: the GeoIP module requires the GeoIP library.</span><br></pre></td></tr></table></figure></p>
+<p>如果报了这类错误，可以Google一下错误信息，找到缺失的包并安装，然后再次执行 <code>./configure ...</code> 命令设置编译参数。</p>
+<p>如果检查通过，最后会显示如下的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Configuration summary</span><br><span class="line">  + using system PCRE library</span><br><span class="line">  + using system OpenSSL library</span><br><span class="line">  + md5: using OpenSSL library</span><br><span class="line">  + sha1: using OpenSSL library</span><br><span class="line">  + using system zlib library</span><br><span class="line"></span><br><span class="line">  nginx path prefix: &quot;/usr/share/nginx&quot;</span><br><span class="line">  nginx binary file: &quot;/usr/share/nginx/sbin/nginx&quot;</span><br><span class="line">  nginx configuration prefix: &quot;/etc/nginx&quot;</span><br><span class="line">  nginx configuration file: &quot;/etc/nginx/nginx.conf&quot;</span><br><span class="line">  nginx pid file: &quot;/run/nginx.pid&quot;</span><br><span class="line">  nginx error log file: &quot;/var/log/nginx/error.log&quot;</span><br><span class="line">  nginx http access log file: &quot;/var/log/nginx/access.log&quot;</span><br><span class="line">  nginx http client request body temporary files: &quot;/var/lib/nginx/body&quot;</span><br><span class="line">  nginx http proxy temporary files: &quot;/var/lib/nginx/proxy&quot;</span><br><span class="line">  nginx http fastcgi temporary files: &quot;/var/lib/nginx/fastcgi&quot;</span><br><span class="line">  nginx http uwsgi temporary files: &quot;/var/lib/nginx/uwsgi&quot;</span><br><span class="line">  nginx http scgi temporary files: &quot;/var/lib/nginx/scgi&quot;</span><br></pre></td></tr></table></figure></p>
+<p>然后编译Nginx<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># make </span></span><br><span class="line"><span class="comment"># make install</span></span><br></pre></td></tr></table></figure></p>
+<p>将编译后的文件替换到发行版的安装目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cp -rf objs/nginx /usr/sbin/nginx</span></span><br></pre></td></tr></table></figure></p>
+<p>可以用如下命令来关闭/启动 Nginx<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl stop nginx</span></span><br><span class="line"><span class="comment"># systemctl start nginx</span></span><br></pre></td></tr></table></figure></p>
+<p>用如下命令可以查看运行的状态<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl status nginx</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Nginx的设置"><a href="#Nginx的设置" class="headerlink" title="Nginx的设置"></a>Nginx的设置</h2><p>Nginx的配置文件是 <code>/etc/nginx/nginx.conf</code>，贴一下我反代Google的设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"># upstream配置google的ip，ip可以通过 nslookup www.google.com 命令获取，</span><br><span class="line"># 多运行几次nslookup会获取到多个IP，有助于避免触发google的防机器人检测。</span><br><span class="line">upstream www.google.com &#123;</span><br><span class="line">    server 172.217.0.4:443 weight=1;</span><br><span class="line">    server 172.217.1.36:443 weight=1;</span><br><span class="line">    server 216.58.193.196:443 weight=1;</span><br><span class="line">    server 216.58.216.4:443 weight=1;</span><br><span class="line">    server 216.58.216.36:443 weight=1;</span><br><span class="line">    server 216.58.219.36:443 weight=1;</span><br><span class="line">    server 74.125.25.99:443 weight=1;</span><br><span class="line">    server 74.125.25.103:443 weight=1;</span><br><span class="line">    server 74.125.25.104:443 weight=1;</span><br><span class="line">    server 74.125.25.105:443 weight=1;</span><br><span class="line">    server 74.125.25.106:443 weight=1;</span><br><span class="line">    server 74.125.25.147:443 weight=1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 这里将http的访问强制跳转到https，&lt;domain.name&gt;改为自己的域名。</span><br><span class="line">server &#123; </span><br><span class="line">    listen 80;</span><br><span class="line">    server_name &lt;domain.name&gt;;</span><br><span class="line">    # http to https</span><br><span class="line">    location / &#123;</span><br><span class="line">          rewrite ^/(.*)$ https://&lt;domain.name&gt;$1 permanent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># https的设置</span><br><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl;</span><br><span class="line">    server_name  &lt;domain.name&gt;;</span><br><span class="line">    resolver 8.8.8.8;</span><br><span class="line">    </span><br><span class="line">    # SSL证书的设置，&lt;path to ssl.xxx&gt;改为自己的证书路径</span><br><span class="line">    ssl on;</span><br><span class="line">    ssl_certificate &lt;path to ssl.crt&gt;;</span><br><span class="line">    ssl_certificate_key &lt;path to ssl.key&gt;;</span><br><span class="line"></span><br><span class="line">    # 防止网络爬虫</span><br><span class="line">    #forbid spider</span><br><span class="line">    if ($http_user_agent ~* &quot;qihoobot|Baiduspider|Googlebot|Googlebot-Mobile|Googlebot-Image|Mediapartners-Google|Adsbot-Google|Feedfetcher-Google|Yahoo! Slurp|Yahoo! Slurp China|YoudaoBot|Sosospider|Sogou spider|Sogou web spider|MSNBot|ia_archiver|Tomato Bot&quot;) </span><br><span class="line">    &#123; </span><br><span class="line">        return 403; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # 禁止用其他域名或直接用IP访问，只允许指定的域名</span><br><span class="line">    #forbid illegal domain</span><br><span class="line">    if ( $host != &quot;&lt;domain.name&gt;&quot; ) &#123;</span><br><span class="line">        return 403; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    access_log  off;</span><br><span class="line">    error_log   on;</span><br><span class="line">    error_log  /var/log/nginx/google-proxy-error.log;</span><br><span class="line">	</span><br><span class="line">    # 编译时加了 ngx_http_google_filter_module 模块，location的设置就非常简单</span><br><span class="line">    location / &#123;</span><br><span class="line">        google on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果编译时没有加 ngx_http_google_filter_module 模块，location的设置可以参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">    proxy_redirect off;</span><br><span class="line">    proxy_cookie_domain google.com &lt;domain.name&gt;; </span><br><span class="line">    proxy_pass https://www.google.com;</span><br><span class="line">    proxy_connect_timeout 60s;</span><br><span class="line">    proxy_read_timeout 5400s;</span><br><span class="line">    proxy_send_timeout 5400s;</span><br><span class="line"></span><br><span class="line">    proxy_set_header Host &quot;www.google.com&quot;;</span><br><span class="line">    proxy_set_header User-Agent $http_user_agent;</span><br><span class="line">    proxy_set_header Referer https://www.google.com;</span><br><span class="line">    proxy_set_header Accept-Encoding &quot;&quot;;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr; </span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; </span><br><span class="line">    proxy_set_header X-Forwarded-Proto https;</span><br><span class="line">    proxy_set_header Accept-Language &quot;zh-CN&quot;;</span><br><span class="line">    proxy_set_header Cookie &quot;PREF=ID=047808f19f6de346:U=0f62f33dd8549d11:FF=2:LD=en-US:NW=1:TM=1325338577:LM=1332142444:GM=1:SG=2:S=rE0SyJh2W1IQ-Maw&quot;;</span><br><span class="line"></span><br><span class="line">    subs_filter https://www.google.com.hk &lt;domain.name&gt;;</span><br><span class="line">    subs_filter https://www.google.com &lt;domain.name&gt;;</span><br><span class="line">    #subs_filter_types text/html text/css text/xml text/javascript;</span><br><span class="line"></span><br><span class="line">    sub_filter_once off; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>修改完配置文件后，可以用 <code>nginx -t</code> 检查配置文件是否正确：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nginx -t</span></span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</span><br></pre></td></tr></table></figure></p>
+<p>看到上面的显示就表明设置正确。</p>
+<p>配置文件修改后需要重启Nginx：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl restart nginx</span></span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/06/04/64-27-year/" itemprop="url">
                   二十七年了
                 </a>
@@ -373,22 +608,27 @@
 <h2 id="设置apt-conf"><a href="#设置apt-conf" class="headerlink" title="设置apt.conf"></a>设置apt.conf</h2><p>Ubuntu在安装时就会提示输入代理的设置，设置的代理保存在 /etc/apt/apt.conf 文件里，文件内容格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Acquire::http::Proxy &quot;http://&lt;proxy.server&gt;:&lt;port&gt;/&quot;;</span><br></pre></td></tr></table></figure></p>
 <p>如果安装时没设置代理，或代理有变化，以后也可以编辑修改这个文件。</p>
 <p>这样设置后，apt-get就可以正常使用了。</p>
-<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h2><p>只设置apt.conf，wget或git等软件还是不能访问网络，这时可以再设置2个环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/</span></span><br><span class="line"><span class="comment"># export https_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h2><p>只设置apt.conf，wget或git等软件还是不能访问网络，这时可以再设置2个环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">export</span> http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/</span><br><span class="line">$ <span class="built_in">export</span> https_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/</span><br></pre></td></tr></table></figure></p>
 <p>或者将这2条命令添加到 ~/.bashrc 结尾。<br>如果访问的代理需要用户名和密码，上面的代理设置可以写成 <code>http://&lt;user&gt;:&lt;password&gt;@&lt;proxy.server&gt;:&lt;port&gt;/</code> 。<br>有了这两个环境变量，wget或git（通过http/https）等命令就可以正常访问网络了。</p>
-<h2 id="wget的特殊设置"><a href="#wget的特殊设置" class="headerlink" title="wget的特殊设置"></a>wget的特殊设置</h2><p>对于wget，还可以编辑/etc/wgetrc，找到如下内容，去掉设置项前的<code>#</code>号并修改其中的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># You can set the default proxies for Wget to use for http, https, and ftp.</span><br><span class="line"># They will override the value in the environment.</span><br><span class="line">#https_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#http_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#ftp_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line"></span><br><span class="line"># If you do not want to use proxy at all, set this to off.</span><br><span class="line">#use_proxy = on</span><br></pre></td></tr></table></figure></p>
+<h2 id="wget的设置"><a href="#wget的设置" class="headerlink" title="wget的设置"></a>wget的设置</h2><p>对于wget，还可以编辑/etc/wgetrc，找到如下内容，去掉设置项前的<code>#</code>号并修改其中的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># You can set the default proxies for Wget to use for http, https, and ftp.</span><br><span class="line"># They will override the value in the environment.</span><br><span class="line">#https_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#http_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line">#ftp_proxy = http://proxy.yoyodyne.com:18023/</span><br><span class="line"></span><br><span class="line"># If you do not want to use proxy at all, set this to off.</span><br><span class="line">#use_proxy = on</span><br></pre></td></tr></table></figure></p>
 <p>或者在主目录下新建一个文件 ~/.wgetrc，将上面那段内容复制过来并按实际修改。</p>
-<p>如果想临时使用一个代理，不想修改配置文件或设置环境变量，可以在wget命令中增加 <code>-e &quot;xxx&quot;</code> 选项，这个选项是执行一个wgetrc格式的命令。<br>命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget -e "use_proxy=on" -e "http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/" &lt;url&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="Git的特殊设置"><a href="#Git的特殊设置" class="headerlink" title="Git的特殊设置"></a>Git的特殊设置</h2><p>Git支持Git、SSH、HTTP/HTTPS三种协议访问远程仓库，3钟协议的远程仓库地址格式不同，以 GitHub 为例：<br>Git协议：<code>git://github.com/...</code><br>SSH协议：<code>git@github.com:...</code><br>HTTP/HTTPS协议：<code>http://github.com/...</code> 或 <code>https://github.com/...</code></p>
+<p>如果想临时使用一个代理，不想修改配置文件或设置环境变量，可以在wget命令中增加 <code>-e &quot;xxx&quot;</code> 选项，这个选项是执行一个wgetrc格式的命令。<br>命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ wget <span class="_">-e</span> <span class="string">"use_proxy=on"</span> <span class="_">-e</span> <span class="string">"http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;/"</span> &lt;url&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Git的设置"><a href="#Git的设置" class="headerlink" title="Git的设置"></a>Git的设置</h2><p>Git支持Git、SSH、HTTP/HTTPS三种协议访问远程仓库，3钟协议的远程仓库地址格式不同，以 GitHub 为例：<br>Git协议：<code>git://github.com/...</code><br>SSH协议：<code>git@github.com:...</code><br>HTTP/HTTPS协议：<code>http://github.com/...</code> 或 <code>https://github.com/...</code></p>
 <p>上面设置的环境变量，可以让Git使用HTTP/HTTPS协议通过代理访问远程仓库。</p>
-<p>除了设环境变量，Git也可以通过如下命令设置http的代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git config --global http.proxy http://&lt;user&gt;:&lt;password&gt;@&lt;proxy.server&gt;:&lt;port&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>如果要通过Git协议访问远程仓库，可以先安装一个软件 connect-proxy （其他发行版可能叫 proxy-connect）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sudo apt-get install connect-proxy</span></span><br></pre></td></tr></table></figure></p>
-<p>然后在 /usr/bin 下新建一个文件 httpproxywrapper ，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">connect -H &lt;proxy.server.com&gt;:&lt;port&gt; &quot;$@&quot;</span><br></pre></td></tr></table></figure></p>
+<p>除了设环境变量，Git也可以通过如下命令设置http的代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global http.proxy http://&lt;user&gt;:&lt;password&gt;@&lt;proxy.server&gt;:&lt;port&gt;</span><br></pre></td></tr></table></figure></p>
+<p>如果要通过Git协议访问远程仓库，可以先安装一个软件 connect-proxy （其他发行版可能叫 proxy-connect）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install connect-proxy</span><br></pre></td></tr></table></figure></p>
+<p>然后在 /usr/bin 下新建一个文件 httpproxywrapper ，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">connect -H &lt;proxy.server&gt;:&lt;port&gt; &quot;$@&quot;</span><br></pre></td></tr></table></figure></p>
 <p>上面的 -H 表示是Http代理，如果是socks代理，需要改为 -S。</p>
-<p>给 httpproxywrapper 设置可执行权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sudo chmod +x httpproxywrapper</span></span><br></pre></td></tr></table></figure></p>
-<p>然后设置 git 使用代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git config --global core.gitproxy /usr/bin/httpproxywrapper</span></span><br></pre></td></tr></table></figure></p>
-<p>或设置环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export GIT_PROXY_COMMAND="/usr/bin/httpproxywrapper"</span></span><br></pre></td></tr></table></figure></p>
+<p>给 httpproxywrapper 设置可执行权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chmod +x /usr/bin/httpproxywrapper</span><br></pre></td></tr></table></figure></p>
+<p>然后设置 git 使用代理：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global core.gitproxy /usr/bin/httpproxywrapper</span><br></pre></td></tr></table></figure></p>
+<p>或设置环境变量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">export</span> GIT_PROXY_COMMAND=<span class="string">"/usr/bin/httpproxywrapper"</span></span><br></pre></td></tr></table></figure></p>
 <p>这样设置，就可以用Git协议通过代理访问远程仓库了。</p>
 <p>至于Git的SSH协议，网上找了几种方法，但经测试均无法通过http代理访问远程仓库，猜测可能和公司的代理设置有关，就不折腾了。</p>
+<h2 id="Docker的设置"><a href="#Docker的设置" class="headerlink" title="Docker的设置"></a>Docker的设置</h2><p>Docker要使用代理，需要修改 <code>etc/default/docker</code> 这个文件，在其中增加如下几行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;</span><br><span class="line">https_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;</span><br><span class="line">export http_proxy https_proxy</span><br></pre></td></tr></table></figure></p>
+<p>需要注意，原文档中有一行注释 <code>#export http_proxy=&quot;http://127.0.0.1:3128/&quot;</code>，但按照这样的格式直接写 <code>export http_proxy=http://&lt;proxy.server&gt;:&lt;port&gt;</code> 却不生效。</p>
+<p>修改后，需要重启Docker才能使设置生效：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl restart docker</span><br></pre></td></tr></table></figure></p>
+<p>用以下命令查看设置是否成功：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker info</span><br></pre></td></tr></table></figure></p>
+<p>在返回信息中看到有以下两行就表明OK了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Http Proxy: http://&lt;proxy.server&gt;:&lt;port&gt;</span><br><span class="line">Https Proxy: http://&lt;proxy.server&gt;:&lt;port&gt;</span><br></pre></td></tr></table></figure></p>
 
           
         
@@ -1056,298 +1296,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/10/ubuntu-install-shadowsocks/" itemprop="url">
-                  Ubuntu安装Shadowsocks
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-10T14:31:35+08:00" content="2016-05-10">
-              2016-05-10
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Shadowsocks可以说是我目前用过的最好的科学上网工具了，没有之一，从大约一年半前在搬瓦工上安装好Shadowsocks以来，这么长时间一直能稳定使用。</p>
-<p>搬瓦工上默认的系统是CentOS，以前在这上面装的Shadowsocks，最近计划把系统换成Ubuntu，先学习了解一下Ubuntu下如何安装Shadowsocks。</p>
-<p>Shadowsocks有多个版本，常用的有Libev、Python、Go等，以前在CentOS上装的是Libev版本，这次想试试Python版，Python版本可以通过配置文件同时打开多个端口。</p>
-<p><strong>注意以下几乎所有的命令都需要在root用户下执行，如果非root用户，需要在每条命令前加上<code>sudo</code>。</strong></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>Ununtu下安装Python版本的Shadowsocks其实挺简单，先执行如下命令安装pip和几个依赖的包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install python-pip python-gevent python-m2crypto</span></span><br></pre></td></tr></table></figure></p>
-<p>可能会顺带安装其他的一堆依赖的包，等全部安装完成后，就可以用pip来安装Shadowsocks：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip install shadowsocks</span></span><br></pre></td></tr></table></figure></p>
-<p>注意非root用户在命令前一定要加sudo，否则只会安装在用户的home目录下。</p>
-<p>安装成功的结果显示如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Downloading/unpacking shadowsocks</span><br><span class="line">  Downloading shadowsocks-2.8.2.tar.gz</span><br><span class="line">  Running setup.py (path:/tmp/pip-build-4KPgyg/shadowsocks/setup.py) egg_info <span class="keyword">for</span> package shadowsocks</span><br><span class="line"></span><br><span class="line">Installing collected packages: shadowsocks</span><br><span class="line">  Running setup.py install <span class="keyword">for</span> shadowsocks</span><br><span class="line"></span><br><span class="line">    Installing sslocal script to /usr/<span class="built_in">local</span>/bin</span><br><span class="line">    Installing ssserver script to /usr/<span class="built_in">local</span>/bin</span><br><span class="line">Successfully installed shadowsocks</span><br><span class="line">Cleaning up...</span><br></pre></td></tr></table></figure></p>
-<p>可以看到，默认ssserver和sslocal这两个程序安装到了/usr/local/bin目录</p>
-<h2 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h2><p>执行下面命令在/etc目录下建立一个新目录：shadowsocks，并在其下创建一个文件：config.json：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mkdir /etc/shadowsocks</span></span><br><span class="line"><span class="comment"># vim /etc/shadowsocks/config.json</span></span><br></pre></td></tr></table></figure></p>
-<p>config.json的内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</span><br><span class="line">    &quot;server_port&quot;:8388,</span><br><span class="line">    &quot;password&quot;:&quot;your_password&quot;,</span><br><span class="line">    &quot;timeout&quot;:600,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>“server_port”和”password”可以根据自己的要求设定。</p>
-<p>如果需要同时开多个端口，config.json的内容可以设置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</span><br><span class="line">    &quot;port_password&quot;: &#123;</span><br><span class="line">        &quot;8388&quot;: &quot;your_password1&quot;,</span><br><span class="line">        &quot;8389&quot;: &quot;your_password2&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timeout&quot;:600,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>执行以下命令启动Shadowsocks服务器：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ssserver -c /etc/shadowsocks/config.json -d start </span></span><br><span class="line">INFO: loading config from /etc/shadowsocks/config.json</span><br><span class="line">2016-04-19 03:48:17 INFO     loading libcrypto from libcrypto.so.1.0.0</span><br><span class="line">started</span><br></pre></td></tr></table></figure></p>
-<p>命令中的<code>-d start</code>参数表示Shadowsocks以后台方式运行，所以需要root权限</p>
-<p>然后运行<code>netstat -anp</code>可以查看到Shadowsocks正监听在设置的端口。</p>
-<p>停止Shadowsocks执行如下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ssserver -c /etc/shadowsocks/config.json -d stop</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="设置为服务随系统启动"><a href="#设置为服务随系统启动" class="headerlink" title="设置为服务随系统启动"></a>设置为服务随系统启动</h2><p>执行下面的命令，创建shadowsocks.service文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vim /etc/systemd/system/shadowsocks.service</span></span><br></pre></td></tr></table></figure></p>
-<p>文件的内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">PIDFile=/run/shadowsocks/server.pid</span><br><span class="line">PermissionsStartOnly=true</span><br><span class="line">ExecStartPre=/bin/mkdir -p /run/shadowsocks</span><br><span class="line">ExecStartPre=/bin/chown root:root /run/shadowsocks</span><br><span class="line">ExecStart=/usr/local/bin/ssserver --pid-file /var/run/shadowsocks/server.pid -c /etc/shadowsocks/config.json -d start</span><br><span class="line">Restart=on-abort</span><br><span class="line">User=root</span><br><span class="line">Group=root</span><br><span class="line">UMask=0027</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></p>
-<p>设置文件权限：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># chmod 755 /etc/systemd/system/shadowsocks.service</span></span><br></pre></td></tr></table></figure></p>
-<p>启动服务，enable是将服务设为自动启动。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl start shadowsocks</span></span><br><span class="line"><span class="comment"># systemctl enable shadowsocks</span></span><br></pre></td></tr></table></figure></p>
-<p>查看服务状态：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl status shadowsocks</span></span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/04/markdown-simple-syntax/" itemprop="url">
-                  Markdown简单语法介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-04T11:18:47+08:00" content="2016-05-04">
-              2016-05-04
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Hexo搭建的论坛是用<a href="http://wowubuntu.com/markdown/" target="_blank" rel="external">Markdown</a>来写文档的，这是一种轻量级的「标记语言」，一般写个文档，了解下常用的几个语法就可以了。</p>
-<h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><p>标题可以用2钟方式，一钟是用”#“（井号），总共六级标题，分别在文字前用1到6个“#”号表示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 一级标题</span><br><span class="line">## 二级标题</span><br><span class="line">### 三级标题</span><br><span class="line">#### 四级标题</span><br><span class="line">##### 五级标题</span><br><span class="line">###### 六级标题</span><br></pre></td></tr></table></figure></p>
-<p>另一种是在文字的下面加”=”（等号）或”-“（减号），分别表示一级和二级标题。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">一级标题</span><br><span class="line">========</span><br><span class="line"></span><br><span class="line">二级标题</span><br><span class="line">--------</span><br></pre></td></tr></table></figure></p>
-<h2 id="粗体和斜体"><a href="#粗体和斜体" class="headerlink" title="粗体和斜体"></a>粗体和斜体</h2><p>斜体前后，各加一个”*“（星号）或”_“（下划线）表示，粗体前后，各加两个”*“（星号）或”_“（下划线）表示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">*斜体*</span><br><span class="line">**粗体**</span><br><span class="line">_斜体_</span><br><span class="line">__粗体__</span><br></pre></td></tr></table></figure></p>
-<p>显示如下：<br><em>斜体</em><br><strong>粗体</strong><br><em>斜体</em><br><strong>粗体</strong></p>
-<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>链接分为<strong>行内式</strong>和<strong>参考式</strong>两种。</p>
-<p><strong>行内式</strong>用一对方括号包含显示的文字，紧接着一对圆括号放链接的地址和提示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">访问[GitHub](https://github.com/ &quot;Link to GitHub&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>显示如下：<br>访问<a href="https://github.com/" title="Link to GitHub" target="_blank" rel="external">GitHub</a></p>
-<p><strong>参考式</strong>用两对紧挨的方括号，第二个方括号放链接的ID，并在文章的其他地方定义这个ID的内容。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">访问[GitHub][link1]</span><br><span class="line"></span><br><span class="line">[link1]: https://github.com/  &quot;Link to GitHub&quot;</span><br></pre></td></tr></table></figure></p>
-<p>显示如下：<br>访问<a href="https://github.com/" title="Link to GitHub" target="_blank" rel="external">GitHub</a></p>
-<p>链接的地址可以是站内的相对地址。</p>
-<h3 id="自动链接"><a href="#自动链接" class="headerlink" title="自动链接"></a>自动链接</h3><p>包括在一对尖括号里的地址或邮箱，也会被Markdown自动处理为链接。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">访问&lt;https://github.com/&gt;</span><br><span class="line">mailto: &lt;address@example.com&gt;</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：<br>访问<a href="https://github.com/" target="_blank" rel="external">https://github.com/</a><br>mailto: <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#97;&#100;&#100;&#x72;&#101;&#x73;&#115;&#x40;&#x65;&#120;&#97;&#109;&#112;&#108;&#101;&#x2e;&#99;&#x6f;&#109;">&#97;&#100;&#100;&#x72;&#101;&#x73;&#115;&#x40;&#x65;&#120;&#97;&#109;&#112;&#108;&#101;&#x2e;&#99;&#x6f;&#109;</a></p>
-<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><p>在要引用文字的每行开头增加一个”&gt; “（大于号），注意和后面的内容要有空格，多个”&gt; “还可以实现嵌套引用。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">普通内容</span><br><span class="line">&gt; 引用内容</span><br><span class="line">&gt; &gt; 嵌套引用内容</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：<br>普通内容</p>
-<blockquote>
-<p>引用内容</p>
-<blockquote>
-<p>嵌套引用内容</p>
-</blockquote>
-</blockquote>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>行内的代码，可以在前后各加一个”`“（反引号）来表示。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">使用命令 `pip install -U pip` 来更新pip。</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：<br>使用命令 <code>pip install -U pip</code> 来更新pip。</p>
-<p>大段的代码，可以是在每行的开头增加4个空格或一个制表符。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">普通内容</span><br><span class="line">    #!/usr/bin/python</span><br><span class="line">    print(&apos;hello world!&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：<br>普通内容</p>
-<pre><code>#!/usr/bin/python
-print(&apos;hello world!&apos;)    
-</code></pre><p>或者在代码前后各加一行，写三个”`“（反引号），如” ``` “。<br>在开头的三个反引号后面，还可以写代码的类型，实现语法高亮，如” ``` python “。</p>
-<p>语法参考如下：</p>
-<blockquote>
-<p>```  python</p>
-<p>#!/usr/bin/python<br>print(‘hello world!’)<br>```</p>
-</blockquote>
-<p>显示效果如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line">print(<span class="string">'hello world!'</span>)</span><br></pre></td></tr></table></figure></p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>在文档中添加图片的语法和链接的语法很像，也分为行内式和参考式，和链接的区别是在前面增加了一个”!”（惊叹号）。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">这是一个行内式添加的图片：![64 fire](/images/64_fire.jpg &quot;64 fire&quot;)</span><br><span class="line">这是一个链接式添加的图片：![64 fire][pic-1]</span><br><span class="line"></span><br><span class="line">[pic-1]: /images/64_fire.jpg &quot;64 fire&quot;</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：<br>这是一个行内式添加的图片：<img src="/images/64_fire.jpg" alt="64 fire" title="64 fire"><br>这是一个链接式添加的图片：<img src="/images/64_fire.jpg" alt="64 fire" title="64 fire"></p>
-<h2 id="分隔线"><a href="#分隔线" class="headerlink" title="分隔线"></a>分隔线</h2><p>在一行中用三个以上的星号、减号、底线来建立一个分隔线，行内不能有其他东西，中间可以插入空格<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">***</span><br><span class="line">* * *</span><br><span class="line">*********</span><br><span class="line">- - -</span><br><span class="line">_________</span><br></pre></td></tr></table></figure></p>
-<p>上面几种显示效果均一样，如下：</p>
-<hr>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><p>Markdown 支持有序列表和无序列表。</p>
-<p>无序列表使用星号、加号或是减号作为列表标记<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">* 项目1</span><br><span class="line">* 项目2</span><br><span class="line">* 项目3</span><br><span class="line"></span><br><span class="line">或</span><br><span class="line"></span><br><span class="line">+ 项目1</span><br><span class="line">+ 项目2</span><br><span class="line">+ 项目3</span><br><span class="line"></span><br><span class="line">或</span><br><span class="line"></span><br><span class="line">- 项目1</span><br><span class="line">- 项目2</span><br><span class="line">- 项目3</span><br></pre></td></tr></table></figure></p>
-<p>上面三种，显示效果均一样，如下：</p>
-<ul>
-<li>项目1</li>
-<li>项目2</li>
-<li>项目3</li>
-</ul>
-<p>有序列表使用数字加一个英文句点作为列表标记。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 项目1</span><br><span class="line">2. 项目2</span><br><span class="line">3. 项目3</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：</p>
-<ol>
-<li>项目1</li>
-<li>项目2</li>
-<li>项目3</li>
-</ol>
-<p>事实上，数字的值并不重要，如以下2种写法，显示效果均和前面一样，序号都从1开始顺序排列。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 项目1</span><br><span class="line">1. 项目2</span><br><span class="line">1. 项目3</span><br><span class="line"></span><br><span class="line">或</span><br><span class="line"></span><br><span class="line">3. 项目1</span><br><span class="line">9. 项目2</span><br><span class="line">6. 项目3</span><br></pre></td></tr></table></figure></p>
-<p>不过第一个项目的序号最好是1，因为Markdown以后可能会支持有序列表的start属性。</p>
-<p>如果项目的信息有多行文字，为了美观可以在前面最多加3个空格保持缩进，也可以偷懒不加空格，如以下写法均可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* 项目1</span><br><span class="line">  项目1-1</span><br><span class="line">* 项目2</span><br><span class="line">项目2-1</span><br><span class="line">* 项目3</span><br></pre></td></tr></table></figure></p>
-<p>如果一段文字以数字加一个点开头，但不想让其变成一个有序列表，可以在点前加个反斜杠，无序列表的符号也是如此，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1989\. this is s ...</span><br><span class="line">\* this is s ...</span><br></pre></td></tr></table></figure></p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>Markdown使用管线图的方式实现表格，如下表示一个简单的表格，注意表格的开头要空一行。<br>语法参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">标题1 | 标题2 | 标题3</span><br><span class="line">:-----|-----:|:-----:</span><br><span class="line">行1-内容1 | 行1-内容2 | 行1-内容3</span><br><span class="line">行2-内容1 | 行2-内容2 | 行2-内容3</span><br></pre></td></tr></table></figure></p>
-<p>显示效果如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">标题1</th>
-<th style="text-align:right">标题2</th>
-<th style="text-align:center">标题3</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">行1-内容1</td>
-<td style="text-align:right">行1-内容2</td>
-<td style="text-align:center">行1-内容3</td>
-</tr>
-<tr>
-<td style="text-align:left">行2-内容1</td>
-<td style="text-align:right">行2-内容2</td>
-<td style="text-align:center">行2-内容3</td>
-</tr>
-</tbody>
-</table>
-<p>注意上面第二行中的冒号，表示几种不同的对齐方式</p>
-<p>为了美观，写的时候也可以尽量对齐，并在前后各加个”|”（下划线），如下面的写法，显示效果和前面一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">| 标题1     | 标题2     | 标题3     |</span><br><span class="line">|:----------|----------:|:---------:|</span><br><span class="line">| 行1-内容1 | 行1-内容2 | 行1-内容3 |</span><br><span class="line">| 行2-内容1 | 行2-内容2 | 行2-内容3 |</span><br></pre></td></tr></table></figure></p>
-<h2 id="反斜杠"><a href="#反斜杠" class="headerlink" title="反斜杠"></a>反斜杠</h2><p>如果需要在文档中显示一下Markdown语法相关的字符，不希望Markdown将其按语法字符处理，可以在前面增加一个反斜杠，在前面的介绍列表时已经有这样的用法。</p>
-
-          
-        
-      
-    </div>
-    
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1393,7 +1341,7 @@ print(&apos;hello world!&apos;)
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1403,7 +1351,7 @@ print(&apos;hello world!&apos;)
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

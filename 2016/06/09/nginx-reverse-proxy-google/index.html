@@ -1,0 +1,592 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Google,Nginx," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="自从谷歌被墙，虽然在家可以翻墙访问，但在公司翻墙不方便，只能在网上找谷歌镜像站（镜像站是通俗叫法，更准确的叫法是反向代理）。但这些找来的镜像站往往不太稳定，经常过一段时间就不能访问甚至也会被墙，所以想着要搭个个人自用的反向代理。
+搭反向代理需要的条件
+一个墙外的VPS对VPS的要求不高，搬瓦工128m内存的小机，搭建及使用均毫无压力。
+
+一个域名网上有很多地方可以申请免费的域名，比如Freenom">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Nginx反向代理谷歌">
+<meta property="og:url" content="https://zhgcao.github.io/2016/06/09/nginx-reverse-proxy-google/index.html">
+<meta property="og:site_name" content="匿名">
+<meta property="og:description" content="自从谷歌被墙，虽然在家可以翻墙访问，但在公司翻墙不方便，只能在网上找谷歌镜像站（镜像站是通俗叫法，更准确的叫法是反向代理）。但这些找来的镜像站往往不太稳定，经常过一段时间就不能访问甚至也会被墙，所以想着要搭个个人自用的反向代理。
+搭反向代理需要的条件
+一个墙外的VPS对VPS的要求不高，搬瓦工128m内存的小机，搭建及使用均毫无压力。
+
+一个域名网上有很多地方可以申请免费的域名，比如Freenom">
+<meta property="og:updated_time" content="2016-06-15T08:45:30.465Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用Nginx反向代理谷歌">
+<meta name="twitter:description" content="自从谷歌被墙，虽然在家可以翻墙访问，但在公司翻墙不方便，只能在网上找谷歌镜像站（镜像站是通俗叫法，更准确的叫法是反向代理）。但这些找来的镜像站往往不太稳定，经常过一段时间就不能访问甚至也会被墙，所以想着要搭个个人自用的反向代理。
+搭反向代理需要的条件
+一个墙外的VPS对VPS的要求不高，搬瓦工128m内存的小机，搭建及使用均毫无压力。
+
+一个域名网上有很多地方可以申请免费的域名，比如Freenom">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 利用Nginx反向代理谷歌 | 匿名 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">匿名</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">爱自由、爱爬墙</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                利用Nginx反向代理谷歌
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-09T11:23:56+08:00" content="2016-06-09">
+              2016-06-09
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>自从谷歌被墙，虽然在家可以翻墙访问，但在公司翻墙不方便，只能在网上找谷歌镜像站（镜像站是通俗叫法，更准确的叫法是反向代理）。但这些找来的镜像站往往不太稳定，经常过一段时间就不能访问甚至也会被墙，所以想着要搭个个人自用的反向代理。</p>
+<h2 id="搭反向代理需要的条件"><a href="#搭反向代理需要的条件" class="headerlink" title="搭反向代理需要的条件"></a>搭反向代理需要的条件</h2><ul>
+<li><p>一个墙外的VPS<br>对VPS的要求不高，搬瓦工128m内存的小机，搭建及使用均毫无压力。</p>
+</li>
+<li><p>一个域名<br>网上有很多地方可以申请免费的域名，比如<a href="http://www.freenom.com/" target="_blank" rel="external">Freenom</a>，可以免费申请.tk、.ml、.cf、.ga等后缀的顶级域名，最长一年免费，到期可以免费续期。</p>
+</li>
+<li><p>域名的SSL证书<br>其实反向代理本身是不需要SSL证书的，但如果没有证书只用http，仍然会被墙检测到搜索的内容，也就非常容易被拦截甚至被封IP，所以，反代谷歌最好有SSL证书，用https协议来访问。<br>网上能免费申请SSL证书的地方不多，推荐<a href="https://www.startssl.com/" target="_blank" rel="external">StartSSL</a>，也是最长一年免费，到期再免费续期。申请SSL证书的步骤比较麻烦，可以看看这个教程：<a href="http://www.freehao123.com/startssl-ssl-apache-ngnix/" target="_blank" rel="external">新StartSSL免费SSL证书申请使用</a>。</p>
+</li>
+</ul>
+<h2 id="安装并编译Nginx"><a href="#安装并编译Nginx" class="headerlink" title="安装并编译Nginx"></a>安装并编译Nginx</h2><p>Nginx自身就支持反向代理功能，但为了更好的反代谷歌，还需要至少一个第三方模块，Nginx加入第三方模块相对有点麻烦，需要下载源码重新编译。<br>这次折腾编译Nginx，参考了些网上的教程，但没有完全按照教程，步骤稍有点多，主要想尽量保留原有发行版的功能，以备以后用Nginx做其他用途。</p>
+<p>以下命令全是在Ubuntu上执行，CentOs的命令不一样，用户默认为root，非root用户很多命令需要加sudo。</p>
+<p>先安装需要用到的一些包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get update</span></span><br><span class="line"><span class="comment"># apt-get install libpcre3 libpcre3-dev</span></span><br><span class="line"><span class="comment"># apt-get install zlib1g zlib1g-dev openssl libssl-dev</span></span><br><span class="line"><span class="comment"># apt-get install libxml2 libxml2-dev libxslt1-dev</span></span><br><span class="line"><span class="comment"># apt-get install libgd-dev libgeoip-dev</span></span><br><span class="line"><span class="comment"># apt-get install -y gcc g++ make automake</span></span><br></pre></td></tr></table></figure></p>
+<p>安装Nginx的发行版<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install nginx</span></span><br></pre></td></tr></table></figure></p>
+<p>查看发行版的版本号和编译参数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nginx -V</span></span><br><span class="line">nginx version: nginx/1.9.3 (Ubuntu)</span><br><span class="line">built with OpenSSL 1.0.2d 9 Jul 2015</span><br><span class="line">TLS SNI support enabled</span><br><span class="line">configure arguments: --with-cc-opt=<span class="string">'-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2'</span> --with-ld-opt=<span class="string">'-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now'</span> --prefix=/usr/share/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/var/lib/nginx/body --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --http-proxy-temp-path=/var/lib/nginx/proxy --http-scgi-temp-path=/var/lib/nginx/scgi --http-uwsgi-temp-path=/var/lib/nginx/uwsgi --with-debug --with-pcre-jit --with-ipv6 --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_spdy_module --with-http_sub_module --with-http_xslt_module --with-mail --with-mail_ssl_module</span><br></pre></td></tr></table></figure></p>
+<p>从上面的信息可以看到当前安装的是1.9.3版本，configure arguments后面跟的一长串是发行版的编译参数，很重要，后面需要用到。</p>
+<p>找一个目录放源码，在这个目录里下载对应版本的Nginx源码并解压：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget http://nginx.org/download/nginx-1.9.3.tar.gz</span></span><br><span class="line"><span class="comment"># tar -zxvf nginx-1.9.3.tar.gz</span></span><br></pre></td></tr></table></figure></p>
+<p>为了在反代时，更好的替换原网页中的信息，需要在编译时增加一个第三方模块：<a href="https://github.com/yaoweibin/ngx_http_substitutions_filter_module" target="_blank" rel="external">substitutions 扩展</a><br>下载 substitutions 的源码<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module</span></span><br></pre></td></tr></table></figure></p>
+<p>下载后，会在当前目录下有个 ngx_http_substitutions_filter_module 目录</p>
+<p>另一个用于便捷配置反代Google的第三方模块：<a href="https://github.com/cuber/ngx_http_google_filter_module" target="_blank" rel="external">ngx_http_google_filter_module</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/cuber/ngx_http_google_filter_module</span><br></pre></td></tr></table></figure></p>
+<p>下载后，会在当前目录下有个 ngx_http_google_filter_module 目录，这个模块可选，增加后在Nginx配置文件中可以很简单的反代google</p>
+<p>进入Nginx源码的目录，设置编译参数，其实就是在原发行版的编译参数后，增加两个<code>--add-module=../xxx</code>，把两个第三方模块包括进来。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cd nginx-1.9.3</span></span><br><span class="line"><span class="comment"># ./configure \</span></span><br><span class="line">&gt; --with-cc-opt=<span class="string">'-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2'</span> --with-ld-opt=<span class="string">'-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now'</span> --prefix=/usr/share/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/var/lib/nginx/body --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --http-proxy-temp-path=/var/lib/nginx/proxy --http-scgi-temp-path=/var/lib/nginx/scgi --http-uwsgi-temp-path=/var/lib/nginx/uwsgi --with-debug --with-pcre-jit --with-ipv6 --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_spdy_module --with-http_sub_module --with-http_xslt_module --with-mail --with-mail_ssl_module \</span><br><span class="line">&gt; --add-module=../ngx_http_substitutions_filter_module \</span><br><span class="line">&gt; --add-module=../ngx_http_google_filter_module</span><br></pre></td></tr></table></figure></p>
+<p>设置后，会开始检查这些编译参数和环境，如果上面少安装了某些包，或更新的版本需要其他的包，就会报错，如少安装了libgeoip-dev，会报如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure: error: the GeoIP module requires the GeoIP library.</span><br></pre></td></tr></table></figure></p>
+<p>如果报了这类错误，可以Google一下错误信息，找到缺失的包并安装，然后再次执行 <code>./configure ...</code> 命令设置编译参数。</p>
+<p>如果检查通过，最后会显示如下的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Configuration summary</span><br><span class="line">  + using system PCRE library</span><br><span class="line">  + using system OpenSSL library</span><br><span class="line">  + md5: using OpenSSL library</span><br><span class="line">  + sha1: using OpenSSL library</span><br><span class="line">  + using system zlib library</span><br><span class="line"></span><br><span class="line">  nginx path prefix: &quot;/usr/share/nginx&quot;</span><br><span class="line">  nginx binary file: &quot;/usr/share/nginx/sbin/nginx&quot;</span><br><span class="line">  nginx configuration prefix: &quot;/etc/nginx&quot;</span><br><span class="line">  nginx configuration file: &quot;/etc/nginx/nginx.conf&quot;</span><br><span class="line">  nginx pid file: &quot;/run/nginx.pid&quot;</span><br><span class="line">  nginx error log file: &quot;/var/log/nginx/error.log&quot;</span><br><span class="line">  nginx http access log file: &quot;/var/log/nginx/access.log&quot;</span><br><span class="line">  nginx http client request body temporary files: &quot;/var/lib/nginx/body&quot;</span><br><span class="line">  nginx http proxy temporary files: &quot;/var/lib/nginx/proxy&quot;</span><br><span class="line">  nginx http fastcgi temporary files: &quot;/var/lib/nginx/fastcgi&quot;</span><br><span class="line">  nginx http uwsgi temporary files: &quot;/var/lib/nginx/uwsgi&quot;</span><br><span class="line">  nginx http scgi temporary files: &quot;/var/lib/nginx/scgi&quot;</span><br></pre></td></tr></table></figure></p>
+<p>然后编译Nginx<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># make </span></span><br><span class="line"><span class="comment"># make install</span></span><br></pre></td></tr></table></figure></p>
+<p>将编译后的文件替换到发行版的安装目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cp -rf objs/nginx /usr/sbin/nginx</span></span><br></pre></td></tr></table></figure></p>
+<p>可以用如下命令来关闭/启动 Nginx<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl stop nginx</span></span><br><span class="line"><span class="comment"># systemctl start nginx</span></span><br></pre></td></tr></table></figure></p>
+<p>用如下命令可以查看运行的状态<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl status nginx</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Nginx的设置"><a href="#Nginx的设置" class="headerlink" title="Nginx的设置"></a>Nginx的设置</h2><p>Nginx的配置文件是 <code>/etc/nginx/nginx.conf</code>，贴一下我反代Google的设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"># upstream配置google的ip，ip可以通过 nslookup www.google.com 命令获取，</span><br><span class="line"># 多运行几次nslookup会获取到多个IP，有助于避免触发google的防机器人检测。</span><br><span class="line">upstream www.google.com &#123;</span><br><span class="line">    server 172.217.0.4:443 weight=1;</span><br><span class="line">    server 172.217.1.36:443 weight=1;</span><br><span class="line">    server 216.58.193.196:443 weight=1;</span><br><span class="line">    server 216.58.216.4:443 weight=1;</span><br><span class="line">    server 216.58.216.36:443 weight=1;</span><br><span class="line">    server 216.58.219.36:443 weight=1;</span><br><span class="line">    server 74.125.25.99:443 weight=1;</span><br><span class="line">    server 74.125.25.103:443 weight=1;</span><br><span class="line">    server 74.125.25.104:443 weight=1;</span><br><span class="line">    server 74.125.25.105:443 weight=1;</span><br><span class="line">    server 74.125.25.106:443 weight=1;</span><br><span class="line">    server 74.125.25.147:443 weight=1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 这里将http的访问强制跳转到https，&lt;domain.name&gt;改为自己的域名。</span><br><span class="line">server &#123; </span><br><span class="line">    listen 80;</span><br><span class="line">    server_name &lt;domain.name&gt;;</span><br><span class="line">    # http to https</span><br><span class="line">    location / &#123;</span><br><span class="line">          rewrite ^/(.*)$ https://&lt;domain.name&gt;$1 permanent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># https的设置</span><br><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl;</span><br><span class="line">    server_name  &lt;domain.name&gt;;</span><br><span class="line">    resolver 8.8.8.8;</span><br><span class="line">    </span><br><span class="line">    # SSL证书的设置，&lt;path to ssl.xxx&gt;改为自己的证书路径</span><br><span class="line">    ssl on;</span><br><span class="line">    ssl_certificate &lt;path to ssl.crt&gt;;</span><br><span class="line">    ssl_certificate_key &lt;path to ssl.key&gt;;</span><br><span class="line"></span><br><span class="line">    # 防止网络爬虫</span><br><span class="line">    #forbid spider</span><br><span class="line">    if ($http_user_agent ~* &quot;qihoobot|Baiduspider|Googlebot|Googlebot-Mobile|Googlebot-Image|Mediapartners-Google|Adsbot-Google|Feedfetcher-Google|Yahoo! Slurp|Yahoo! Slurp China|YoudaoBot|Sosospider|Sogou spider|Sogou web spider|MSNBot|ia_archiver|Tomato Bot&quot;) </span><br><span class="line">    &#123; </span><br><span class="line">        return 403; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # 禁止用其他域名或直接用IP访问，只允许指定的域名</span><br><span class="line">    #forbid illegal domain</span><br><span class="line">    if ( $host != &quot;&lt;domain.name&gt;&quot; ) &#123;</span><br><span class="line">        return 403; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    access_log  off;</span><br><span class="line">    error_log   on;</span><br><span class="line">    error_log  /var/log/nginx/google-proxy-error.log;</span><br><span class="line">	</span><br><span class="line">    # 编译时加了 ngx_http_google_filter_module 模块，location的设置就非常简单</span><br><span class="line">    location / &#123;</span><br><span class="line">        google on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果编译时没有加 ngx_http_google_filter_module 模块，location的设置可以参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">    proxy_redirect off;</span><br><span class="line">    proxy_cookie_domain google.com &lt;domain.name&gt;; </span><br><span class="line">    proxy_pass https://www.google.com;</span><br><span class="line">    proxy_connect_timeout 60s;</span><br><span class="line">    proxy_read_timeout 5400s;</span><br><span class="line">    proxy_send_timeout 5400s;</span><br><span class="line"></span><br><span class="line">    proxy_set_header Host &quot;www.google.com&quot;;</span><br><span class="line">    proxy_set_header User-Agent $http_user_agent;</span><br><span class="line">    proxy_set_header Referer https://www.google.com;</span><br><span class="line">    proxy_set_header Accept-Encoding &quot;&quot;;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr; </span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; </span><br><span class="line">    proxy_set_header X-Forwarded-Proto https;</span><br><span class="line">    proxy_set_header Accept-Language &quot;zh-CN&quot;;</span><br><span class="line">    proxy_set_header Cookie &quot;PREF=ID=047808f19f6de346:U=0f62f33dd8549d11:FF=2:LD=en-US:NW=1:TM=1325338577:LM=1332142444:GM=1:SG=2:S=rE0SyJh2W1IQ-Maw&quot;;</span><br><span class="line"></span><br><span class="line">    subs_filter https://www.google.com.hk &lt;domain.name&gt;;</span><br><span class="line">    subs_filter https://www.google.com &lt;domain.name&gt;;</span><br><span class="line">    #subs_filter_types text/html text/css text/xml text/javascript;</span><br><span class="line"></span><br><span class="line">    sub_filter_once off; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>修改完配置文件后，可以用 <code>nginx -t</code> 检查配置文件是否正确：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nginx -t</span></span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</span><br></pre></td></tr></table></figure></p>
+<p>看到上面的显示就表明设置正确。</p>
+<p>配置文件修改后需要重启Nginx：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl restart nginx</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Google/" rel="tag">#Google</a>
+          
+            <a href="/tags/Nginx/" rel="tag">#Nginx</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/04/64-27-year/" rel="next" title="二十七年了">
+                <i class="fa fa-chevron-left"></i> 二十七年了
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/14/git-create-remote-server/" rel="prev" title="git自建远程仓库">
+                git自建远程仓库 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="匿名" />
+          <p class="site-author-name" itemprop="name">匿名</p>
+          <p class="site-description motion-element" itemprop="description">没有什么能够阻挡，你对自由的向往！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭反向代理需要的条件"><span class="nav-number">1.</span> <span class="nav-text">搭反向代理需要的条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装并编译Nginx"><span class="nav-number">2.</span> <span class="nav-text">安装并编译Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx的设置"><span class="nav-number">3.</span> <span class="nav-text">Nginx的设置</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">匿名</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
