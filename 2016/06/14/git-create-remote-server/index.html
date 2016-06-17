@@ -27,7 +27,9 @@
 
 
 
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
@@ -59,6 +61,8 @@
 
 
 
+
+
 <link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
@@ -84,15 +88,15 @@
 准备找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：1$ sudo adduser git
 如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 /home/git/.ssh/authorized_key">
 <meta property="og:type" content="article">
-<meta property="og:title" content="git自建远程仓库">
+<meta property="og:title" content="Git自建远程仓库">
 <meta property="og:url" content="https://zhgcao.github.io/2016/06/14/git-create-remote-server/index.html">
 <meta property="og:site_name" content="匿名">
 <meta property="og:description" content="用Git做代码控制时，除了放在GitHub这类公开的远程仓库，还可以很方便的自己建个远程仓库玩。
 准备找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：1$ sudo adduser git
 如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 /home/git/.ssh/authorized_key">
-<meta property="og:updated_time" content="2016-06-15T08:31:15.370Z">
+<meta property="og:updated_time" content="2016-06-15T08:58:06.899Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="git自建远程仓库">
+<meta name="twitter:title" content="Git自建远程仓库">
 <meta name="twitter:description" content="用Git做代码控制时，除了放在GitHub这类公开的远程仓库，还可以很方便的自己建个远程仓库玩。
 准备找一台Linux机器，以Ubuntu为例，先添加一个git用户，供其他电脑访问远程库：1$ sudo adduser git
 如果是个人使用或小范围团队使用，通过SSH来访问会比较简单，收集所有需要访问的用户的ssh pub key，写入 /home/git/.ssh/authorized_key">
@@ -113,7 +117,12 @@
   };
 </script>
 
-  <title> git自建远程仓库 | 匿名 </title>
+
+
+
+  <link rel="canonical" href="https://zhgcao.github.io/2016/06/14/git-create-remote-server/"/>
+
+  <title> Git自建远程仓库 | 匿名 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -169,7 +178,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
           </a>
@@ -179,7 +188,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
             归档
           </a>
@@ -189,7 +198,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             标签
           </a>
@@ -233,7 +242,7 @@
             
             
               
-                git自建远程仓库
+                Git自建远程仓库
               
             
           </h1>
@@ -292,7 +301,7 @@
 
       
     </div>
-    
+
     <div>
       
         
@@ -302,6 +311,7 @@
     <div>
       
         
+
       
     </div>
 
@@ -548,6 +558,7 @@
 
 
   
+
 
 
 

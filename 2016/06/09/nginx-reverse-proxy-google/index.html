@@ -27,7 +27,9 @@
 
 
 
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
@@ -55,6 +57,8 @@
     
     <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
   
+
+
 
 
 
@@ -94,7 +98,7 @@
 一个墙外的VPS对VPS的要求不高，搬瓦工128m内存的小机，搭建及使用均毫无压力。
 
 一个域名网上有很多地方可以申请免费的域名，比如Freenom">
-<meta property="og:updated_time" content="2016-06-15T08:45:30.465Z">
+<meta property="og:updated_time" content="2016-06-16T03:40:33.401Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用Nginx反向代理谷歌">
 <meta name="twitter:description" content="自从谷歌被墙，虽然在家可以翻墙访问，但在公司翻墙不方便，只能在网上找谷歌镜像站（镜像站是通俗叫法，更准确的叫法是反向代理）。但这些找来的镜像站往往不太稳定，经常过一段时间就不能访问甚至也会被墙，所以想着要搭个个人自用的反向代理。
@@ -118,6 +122,11 @@
     }
   };
 </script>
+
+
+
+
+  <link rel="canonical" href="https://zhgcao.github.io/2016/06/09/nginx-reverse-proxy-google/"/>
 
   <title> 利用Nginx反向代理谷歌 | 匿名 </title>
 </head>
@@ -175,7 +184,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
           </a>
@@ -185,7 +194,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
             归档
           </a>
@@ -195,7 +204,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             标签
           </a>
@@ -308,14 +317,14 @@
 <p>可以用如下命令来关闭/启动 Nginx<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl stop nginx</span></span><br><span class="line"><span class="comment"># systemctl start nginx</span></span><br></pre></td></tr></table></figure></p>
 <p>用如下命令可以查看运行的状态<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl status nginx</span></span><br></pre></td></tr></table></figure></p>
 <h2 id="Nginx的设置"><a href="#Nginx的设置" class="headerlink" title="Nginx的设置"></a>Nginx的设置</h2><p>Nginx的配置文件是 <code>/etc/nginx/nginx.conf</code>，贴一下我反代Google的设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"># upstream配置google的ip，ip可以通过 nslookup www.google.com 命令获取，</span><br><span class="line"># 多运行几次nslookup会获取到多个IP，有助于避免触发google的防机器人检测。</span><br><span class="line">upstream www.google.com &#123;</span><br><span class="line">    server 172.217.0.4:443 weight=1;</span><br><span class="line">    server 172.217.1.36:443 weight=1;</span><br><span class="line">    server 216.58.193.196:443 weight=1;</span><br><span class="line">    server 216.58.216.4:443 weight=1;</span><br><span class="line">    server 216.58.216.36:443 weight=1;</span><br><span class="line">    server 216.58.219.36:443 weight=1;</span><br><span class="line">    server 74.125.25.99:443 weight=1;</span><br><span class="line">    server 74.125.25.103:443 weight=1;</span><br><span class="line">    server 74.125.25.104:443 weight=1;</span><br><span class="line">    server 74.125.25.105:443 weight=1;</span><br><span class="line">    server 74.125.25.106:443 weight=1;</span><br><span class="line">    server 74.125.25.147:443 weight=1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 这里将http的访问强制跳转到https，&lt;domain.name&gt;改为自己的域名。</span><br><span class="line">server &#123; </span><br><span class="line">    listen 80;</span><br><span class="line">    server_name &lt;domain.name&gt;;</span><br><span class="line">    # http to https</span><br><span class="line">    location / &#123;</span><br><span class="line">          rewrite ^/(.*)$ https://&lt;domain.name&gt;$1 permanent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># https的设置</span><br><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl;</span><br><span class="line">    server_name  &lt;domain.name&gt;;</span><br><span class="line">    resolver 8.8.8.8;</span><br><span class="line">    </span><br><span class="line">    # SSL证书的设置，&lt;path to ssl.xxx&gt;改为自己的证书路径</span><br><span class="line">    ssl on;</span><br><span class="line">    ssl_certificate &lt;path to ssl.crt&gt;;</span><br><span class="line">    ssl_certificate_key &lt;path to ssl.key&gt;;</span><br><span class="line"></span><br><span class="line">    # 防止网络爬虫</span><br><span class="line">    #forbid spider</span><br><span class="line">    if ($http_user_agent ~* &quot;qihoobot|Baiduspider|Googlebot|Googlebot-Mobile|Googlebot-Image|Mediapartners-Google|Adsbot-Google|Feedfetcher-Google|Yahoo! Slurp|Yahoo! Slurp China|YoudaoBot|Sosospider|Sogou spider|Sogou web spider|MSNBot|ia_archiver|Tomato Bot&quot;) </span><br><span class="line">    &#123; </span><br><span class="line">        return 403; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # 禁止用其他域名或直接用IP访问，只允许指定的域名</span><br><span class="line">    #forbid illegal domain</span><br><span class="line">    if ( $host != &quot;&lt;domain.name&gt;&quot; ) &#123;</span><br><span class="line">        return 403; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    access_log  off;</span><br><span class="line">    error_log   on;</span><br><span class="line">    error_log  /var/log/nginx/google-proxy-error.log;</span><br><span class="line">	</span><br><span class="line">    # 编译时加了 ngx_http_google_filter_module 模块，location的设置就非常简单</span><br><span class="line">    location / &#123;</span><br><span class="line">        google on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果编译时没有加 ngx_http_google_filter_module 模块，location的设置可以参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">    proxy_redirect off;</span><br><span class="line">    proxy_cookie_domain google.com &lt;domain.name&gt;; </span><br><span class="line">    proxy_pass https://www.google.com;</span><br><span class="line">    proxy_connect_timeout 60s;</span><br><span class="line">    proxy_read_timeout 5400s;</span><br><span class="line">    proxy_send_timeout 5400s;</span><br><span class="line"></span><br><span class="line">    proxy_set_header Host &quot;www.google.com&quot;;</span><br><span class="line">    proxy_set_header User-Agent $http_user_agent;</span><br><span class="line">    proxy_set_header Referer https://www.google.com;</span><br><span class="line">    proxy_set_header Accept-Encoding &quot;&quot;;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr; </span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; </span><br><span class="line">    proxy_set_header X-Forwarded-Proto https;</span><br><span class="line">    proxy_set_header Accept-Language &quot;zh-CN&quot;;</span><br><span class="line">    proxy_set_header Cookie &quot;PREF=ID=047808f19f6de346:U=0f62f33dd8549d11:FF=2:LD=en-US:NW=1:TM=1325338577:LM=1332142444:GM=1:SG=2:S=rE0SyJh2W1IQ-Maw&quot;;</span><br><span class="line"></span><br><span class="line">    subs_filter https://www.google.com.hk &lt;domain.name&gt;;</span><br><span class="line">    subs_filter https://www.google.com &lt;domain.name&gt;;</span><br><span class="line">    #subs_filter_types text/html text/css text/xml text/javascript;</span><br><span class="line"></span><br><span class="line">    sub_filter_once off; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果编译时没有加 ngx_http_google_filter_module 模块，location的设置可以参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">    proxy_redirect off;</span><br><span class="line">    proxy_cookie_domain google.com &lt;domain.name&gt;; </span><br><span class="line">    proxy_pass https://www.google.com;</span><br><span class="line">    proxy_connect_timeout 60s;</span><br><span class="line">    proxy_read_timeout 5400s;</span><br><span class="line">    proxy_send_timeout 5400s;</span><br><span class="line"></span><br><span class="line">    proxy_set_header Host &quot;www.google.com&quot;;</span><br><span class="line">    proxy_set_header User-Agent $http_user_agent;</span><br><span class="line">    proxy_set_header Referer https://www.google.com;</span><br><span class="line">    proxy_set_header Accept-Encoding &quot;&quot;;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr; </span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; </span><br><span class="line">    proxy_set_header X-Forwarded-Proto https;</span><br><span class="line">    proxy_set_header Accept-Language &quot;zh-CN&quot;;</span><br><span class="line">    proxy_set_header Cookie &quot;PREF=ID=047808f19f6de346:U=0f62f33dd8549d11:FF=2:LD=en-US:NW=1:TM=1325338577:LM=1332142444:GM=1:SG=2:S=rE0SyJh2W1IQ-Maw&quot;;</span><br><span class="line"></span><br><span class="line">    subs_filter https://www.google.com.hk &lt;domain.name&gt;;</span><br><span class="line">    subs_filter https://www.google.com &lt;domain.name&gt;;</span><br><span class="line">    #subs_filter_types text/css text/xml text/javascript;</span><br><span class="line"></span><br><span class="line">    sub_filter_once off; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>修改完配置文件后，可以用 <code>nginx -t</code> 检查配置文件是否正确：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nginx -t</span></span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</span><br></pre></td></tr></table></figure></p>
 <p>看到上面的显示就表明设置正确。</p>
 <p>配置文件修改后需要重启Nginx：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl restart nginx</span></span><br></pre></td></tr></table></figure></p>
 
       
     </div>
-    
+
     <div>
       
         
@@ -325,6 +334,7 @@
     <div>
       
         
+
       
     </div>
 
@@ -351,8 +361,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/06/14/git-create-remote-server/" rel="prev" title="git自建远程仓库">
-                git自建远程仓库 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/06/14/git-create-remote-server/" rel="prev" title="Git自建远程仓库">
+                Git自建远程仓库 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -577,6 +587,7 @@
 
 
   
+
 
 
 
