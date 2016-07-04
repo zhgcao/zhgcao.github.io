@@ -1,7 +1,7 @@
 ---
 title: 性价比较高的VPS（201606）
 date: 2016-07-03 09:32:14
-tags: [VPS, BandwagonHost, HostOdo, HostUs]
+tags: [VPS, BandwagonHost, HostUs, Hostodo]
 ---
 原来用的VPS是在搬瓦工特价时申请的，只有128m内存，4G硬盘，虽然用来爬墙是足够了，但如果要折腾点别的，就觉得还是小了点，所以一直想着再申请个大一点的。正好最近也有两个朋友问我关于VPS的事，就去了解了一下。
 
@@ -70,4 +70,4 @@ vSwap: 256 MB  | vSwap: 512 MB  | vSwap: 1 GB
 
 注意VZ-512和VZ-1000都要优惠码，直接点链接默认是月付的，在 Billing Cycle 选择年付后默认的价格分别是$25/年和$45/年，要点击Continue后，找到“Have a promotion code? Click here to add it”，点击输入上面的优惠码才会变成$12/年和$18/年。
 
-Hostodo还有个卖点，就是号称可以提供亚洲优化IP，见[官方公告](http://hostodo.com/portal/announcements/13/Asia-Optimized-IPs-Available.html)，如果有需求，可以发Ticket或邮件给他们申请。不过用网上看到的测试IP来测试Ping值，速度的提升很有限，仅比原IP稍好一点。
+Hostodo还有个卖点，就是号称可以提供亚洲优化IP，见[官方公告](http://hostodo.com/portal/announcements/13/Asia-Optimized-IPs-Available.html)，如果有需求，可以发Ticket或邮件给他们申请。不过用网上看到的测试IP来测试Ping值，速度的提升有限，比原IP稍好一点，不能和香港、日本等亚洲机房比。
