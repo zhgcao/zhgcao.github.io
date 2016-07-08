@@ -238,6 +238,119 @@
             
               
                 
+                <a class="post-title-link" href="/2016/07/07/ubuntu-install-letsencrypt/" itemprop="url">
+                  Ubuntu 安装 Let's Encrypt 获取免费证书
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-07T12:41:11+08:00" content="2016-07-07">
+              2016-07-07
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>以前给自己的网站申请免费证书，要去<a href="https://www.startssl.com/" target="_blank" rel="external">StartSSL</a>这里申请，申请的步骤相对比较繁琐，证书到期前还要记得到网站去更新。</p>
+<p>最近发现了一个开源的工具：Certbot（原来的名字叫Let’s Encrypt），安装以后申请证书相当的方便，证书到期前还能用定时任务自动更新，申请到的证书也能被各大主流浏览器接受。<br>Certbot的介绍：<a href="https://letsencrypt.org/" target="_blank" rel="external">https://letsencrypt.org/</a><br>在GitHub上的开源项目地址：<a href="https://github.com/certbot/certbot" target="_blank" rel="external">https://github.com/certbot/certbot</a></p>
+<p>下面以Ubuntu 16.04为例，简要介绍如何安装和使用这个工具。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>在 Ubuntu 16.04 下，安装非常的容易，执行以下一条命令即可：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install letsencrypt</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="获取证书"><a href="#获取证书" class="headerlink" title="获取证书"></a>获取证书</h2><p>首先要有至少一个域名并指向安装工具的服务器，Certbot在获取证书时会使用80端口来验证域名，所以要先停止Apache、Nginx等web服务器，然后执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># letsencrypt certonly</span></span><br></pre></td></tr></table></figure></p>
+<p>然后会出现一个交互的窗口，总共3步：<br>首先输入一个email地址，用于接收紧急通知和恢复。<br>第二步选择同意他们的服务条款。<br>第三步输入要申请的域名，如果有多个域名可以一起申请，多个域名以逗号或空格分开，目前还不支持通配的域名证书。</p>
+<p>顺利的话，会看到以下信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">IMPORTANT NOTES:</span><br><span class="line"> - If you lose your account credentials, you can recover through</span><br><span class="line">   e-mails sent to &lt;email address&gt;.</span><br><span class="line"> - Congratulations! Your certificate and chain have been saved at</span><br><span class="line">   /etc/letsencrypt/live/&lt;domain&gt;/fullchain.pem. Your cert will expire</span><br><span class="line">   on 2016-10-05. To obtain a new version of the certificate in the</span><br><span class="line">   future, simply run Let&apos;s Encrypt again.</span><br><span class="line"> - Your account credentials have been saved in your Let&apos;s Encrypt</span><br><span class="line">   configuration directory at /etc/letsencrypt. You should make a</span><br><span class="line">   secure backup of this folder now. This configuration directory will</span><br><span class="line">   also contain certificates and private keys obtained by Let&apos;s</span><br><span class="line">   Encrypt so making regular backups of this folder is ideal.</span><br><span class="line"> - If you like Let&apos;s Encrypt, please consider supporting our work by:</span><br><span class="line"></span><br><span class="line">   Donating to ISRG / Let&apos;s Encrypt:   https://letsencrypt.org/donate</span><br><span class="line">   Donating to EFF:                    https://eff.org/donate-le</span><br></pre></td></tr></table></figure></p>
+<p>这样就表示申请成功了，申请的域名保存在<code>/etc/letsencrypt/live/&lt;domain&gt;</code>目录下（<code>&lt;domain&gt;</code>是申请时输入的第一个域名），目录下有4个文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ls /etc/letsencrypt/live/&lt;domain&gt;/</span></span><br><span class="line">cert.pem  chain.pem  fullchain.pem  privkey.pem</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>fullchain.pem</code>为证书文件，<code>privkey.pem</code>为证书的私钥。</p>
+<h2 id="使用申请的证书"><a href="#使用申请的证书" class="headerlink" title="使用申请的证书"></a>使用申请的证书</h2><p>以Nginx为例，把证书配置到Nginx的配置文件即可，如以下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl;</span><br><span class="line">    server_name  &lt;domain&gt;;</span><br><span class="line">    </span><br><span class="line">    # SSL证书的设置</span><br><span class="line">    ssl on;</span><br><span class="line">    ssl_certificate /etc/letsencrypt/live/&lt;domain&gt;/fullchain.pem;</span><br><span class="line">    ssl_certificate_key /etc/letsencrypt/live/&lt;domain&gt;/privkey.pem;</span><br><span class="line">	</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置后，重启Nginx，然后就可以通过<code>https://&lt;domain&gt;</code>来访问了。</p>
+<h2 id="更新证书"><a href="#更新证书" class="headerlink" title="更新证书"></a>更新证书</h2><p>Certbot申请的证书，有效期只有90天，到期前需要更新证书，可以用如下命令来测试一下更新证书，更新前，也需要先暂停Nginx，更新成功后，再重启Nginx：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># letsencrypt renew --dry-run --agree-tos</span></span><br></pre></td></tr></table></figure></p>
+<p>其中<code>--dry-run</code>表示这是一个测试，并不真正更新，如果成功则表示可以更新证书，正式更新时把这个选项去掉即可。</p>
+<p>看到如下信息就表示更新成功了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Congratulations, all renewals succeeded. The following certs have been renewed:</span><br><span class="line">  /etc/letsencrypt/live/&lt;domain&gt;/fullchain.pem (success)</span><br></pre></td></tr></table></figure></p>
+<h2 id="自动更新证书"><a href="#自动更新证书" class="headerlink" title="自动更新证书"></a>自动更新证书</h2><p>可以写一个脚本，将停止Nginx、更新证书、重启Nginx这三步写入脚本，由系统定时自动调用，实现证书的自动更新。</p>
+<p>比如在<code>/usr/bin/</code>创建一个脚本<code>cb-renew.sh</code>，脚本内容可以参考如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">systemctl stop nginx</span><br><span class="line">letsencrypt renew --agree-tos</span><br><span class="line">systemctl start nginx</span><br></pre></td></tr></table></figure></p>
+<p>保存后，设置脚本为可执行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># chmod +x /usr/bin/cb-renew.sh</span></span><br></pre></td></tr></table></figure></p>
+<p>在<code>/etc/crontab</code>文件最后增加一行，如下表示每2个月1号的2点30分，以root用户自动执行更新脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">30 2 1 */2 * root /usr/bin/cb-renew.sh</span><br></pre></td></tr></table></figure></p>
+<p>重启系统cron进程：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl restart cron</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="其他Linux和Webserver的安装使用方法"><a href="#其他Linux和Webserver的安装使用方法" class="headerlink" title="其他Linux和Webserver的安装使用方法"></a>其他Linux和Webserver的安装使用方法</h2><p>Certbot目前还是Beta版本，不同的Linux版本，安装使用方法不太一样，其他情况可以访问：<a href="https://certbot.eff.org/" target="_blank" rel="external">https://certbot.eff.org/</a>，选择自己的Webserver和操作系统来了解安装使用方法。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/03/201606-cost-effective-vps/" itemprop="url">
                   性价比较高的VPS（201606）
                 </a>
@@ -1385,107 +1498,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/13/markdown-angle-brackets/" itemprop="url">
-                  在Markdown的正文中使用尖括号
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-13T15:33:32+08:00" content="2016-05-13">
-              2016-05-13
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天用Markdown写一篇文章，里面用了一对尖括号，但在生成的网页中，却发现尖括号以及其中的内容均消失了，在尖括号前加反斜杠也无效，除非左尖括号后面跟的是中文。<br>以下是几种示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例1：&lt;not display&gt;</span><br><span class="line">例2：\&lt;not display\&gt;</span><br><span class="line">例3：&lt;中文可以显示&gt;</span><br></pre></td></tr></table></figure></p>
-<p>显示为：<br>例1：<not display=""><br>例2：\<not display\=""><br>例3：&lt;中文可以显示&gt;</not></not></p>
-<p>在网上查了一下，原来Markdown为了兼容HTML，将尖括号都认为是HTML的语法来处理了，即便加反斜杠也没用。</p>
-<p>为解决这个问题，在正文中正常显示尖括号，可以用下面两种方式：</p>
-<p>一种是作为行内代码处理，在尖括号对前后各加一个反引号 “`”，如这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">例3：`&lt;display&gt;`</span><br></pre></td></tr></table></figure></p>
-<p>显示为：<br>例3：<code>&lt;display&gt;</code></p>
-<p>另一种是用转义字符来代替尖括号，左尖括号写<code>&amp;lt;</code>，右尖括号写<code>&amp;gt;</code>，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">例4：&amp;lt;display&amp;gt;</span><br></pre></td></tr></table></figure></p>
-<p>显示为：<br>例4：&lt;display&gt;</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1531,7 +1543,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-count">20</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1541,7 +1553,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
