@@ -238,6 +238,113 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/06/ubuntu-install-gateone/" itemprop="url">
+                  Ubuntu 安装配置 GateOne
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-06T19:03:29+08:00" content="2016-09-06">
+              2016-09-06
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>平常要操作VPS，大多是用putty这样的SSH客户端连接，但某些情况，不能直接通过SSH连接，putty就无法使用了。<br>最近试用了一下GateOne，这是一个Web方式的SSH，安装设置好后，就可以通过Web页面来访问VPS了，试用下来，还是挺好用的。</p>
+<p>GateOne是开源的，在GitHub上的地址：<a href="https://github.com/liftoff/GateOne" target="_blank" rel="external">https://github.com/liftoff/GateOne</a><br>官方的介绍：<a href="http://liftoff.github.io/GateOne/" target="_blank" rel="external">http://liftoff.github.io/GateOne/</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>GateOne是用Python基于tornado框架开发的，要安装GateOne，需要先安装python、pip、tornado。<br>python、pip的安装略过，tornado可以用如下命令安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip install tornado</span></span><br></pre></td></tr></table></figure></p>
+<p>找一个目录，从GitHub下载GateOne的代码并安装（需要root权限）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git clone git://github.com/liftoff/GateOne</span></span><br><span class="line"><span class="comment"># cd GateOne/</span></span><br><span class="line"><span class="comment"># python setup.py install</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>安装完成后，直接执行如下命令就能启动GateOne（如果有Nginx、Apache等web服务器占用了443端口，需要先停止）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gateone</span></span><br></pre></td></tr></table></figure></p>
+<p>如果要以后台方式启动，可以用如下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># service gateone start</span></span><br></pre></td></tr></table></figure></p>
+<p>执行后，在浏览器输入<code>https://&lt;VPS IP&gt;</code> 就能使用了。</p>
+<h2 id="配合Nginx的设置"><a href="#配合Nginx的设置" class="headerlink" title="配合Nginx的设置"></a>配合Nginx的设置</h2><p>虽然GateOne并不需要设置就能用，但其自带的SSL证书是无效的，访问时会提示网站不可信，同时，可能也不希望其独占443端口，这时可以配合Nginx来使用。</p>
+<p>先修改GateOne的配置文件：<code>/etc/gateone/conf.d/10server.conf</code><br>找到以下几项内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;address&quot;: &quot;127.0.0.1&quot;,		</span><br><span class="line">&quot;disable_ssl&quot;: true,</span><br><span class="line">&quot;port&quot;: 54321,</span><br><span class="line">&quot;url_prefix&quot;: &quot;/gateone/&quot;,</span><br></pre></td></tr></table></figure></p>
+<p>address改为”127.0.0.1”，这样外网不能直接访问GateOne，只能通过Nginx转发<br>disable_ssl设为True，表示不用GateOne自带的证书<br>port改为一个未占用的端口，要和Nginx设置一致<br>url_prefix改为”/gateone/“，要和Nginx设置一致</p>
+<p>修改Nginx的设置文件，如<code>/etc/nginx/sites-enabled/default</code>，设置示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl;</span><br><span class="line">    server_name  &lt;domain&gt;;</span><br><span class="line">	</span><br><span class="line">	ssl on;</span><br><span class="line">    ssl_certificate /etc/letsencrypt/live/&lt;domain&gt;/fullchain.pem;</span><br><span class="line">    ssl_certificate_key /etc/letsencrypt/live/&lt;domain&gt;/privkey.pem;	</span><br><span class="line"></span><br><span class="line">    # GateOne</span><br><span class="line">    location /gateone/ &#123;</span><br><span class="line">        proxy_pass       http://127.0.0.1:54321;</span><br><span class="line"></span><br><span class="line">        proxy_redirect off;</span><br><span class="line">        proxy_pass_header Server;</span><br><span class="line">        proxy_set_header Host $http_host;</span><br><span class="line">        proxy_set_header X-Real-IP $http_address;</span><br><span class="line">        proxy_set_header X-Scheme $scheme;</span><br><span class="line"></span><br><span class="line">        proxy_http_version 1.1;</span><br><span class="line">        proxy_set_header Upgrade $http_upgrade;</span><br><span class="line">        proxy_set_header Connection &quot;upgrade&quot;;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中的location和proxy_pass中的端口，要和GateOne中的设置一致。</p>
+<p>设置好后，重启Nginx和GateOne，然后在浏览器输入<code>https://&lt;Domain&gt;/gateone/</code> 就能使用了。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>GateOne用起来很方便，基本试试就会了，功能也比较强大，一个页面还可以最多开4个窗口，另外，还支持直接查看图片、pdf等文件，这点比putty还方便。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/07/ubuntu-install-letsencrypt/" itemprop="url">
                   Ubuntu 安装 Let's Encrypt 获取免费证书
                 </a>
@@ -1378,131 +1485,11 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/26/ubuntu-install-net-speeder/" itemprop="url">
-                  Ubuntu安装net-speeder
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-26T08:37:10+08:00" content="2016-05-26">
-              2016-05-26
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>目前个人最主要的科学上网工具，就是部署在搬瓦工上的Shadowsocks了，一直能稳定使用，唯一的缺点是速度不够快，看youtube时经常需要中断缓冲一会，不是很爽。</p>
-<p>最近把搬瓦工上的系统更换了一下，重装了Shadowsocks，顺便研究了一下如何加速。</p>
-<p>目前在VPS上，比较常用的加速软件有3钟：锐速、FinalSpeed、net-speeder</p>
-<ol>
-<li>锐速是国内某公司出的商业软件，不开源，网上流传有破解版可用，但是，它只支持KVM架构的VPS，而我的廉价搬瓦工是OpenVZ架构的，不支持。</li>
-<li>FinalSpeed是开源的，项目地址：<a href="https://github.com/d1sm/finalspeed" title="Link to FinalSpeed" target="_blank" rel="external">FinalSpeed</a>，这个工具在使用时还需要装个客户端，否则没有任何加速效果，使用上不太方便。更关键的是，跑起来据说占用内存较大（可能因为是用JAVA开发的），作者特别提示搬瓦工至少需要256内存以上，而我的小VPS只有128M内存。</li>
-<li>net-speeder也是开源的，项目地址：<a href="https://github.com/snooda/net-speeder" title="Link to net-speeder" target="_blank" rel="external">net-speeder</a>，这个项目是用C写的，代码非常简单，只有100多行，加速的原理简单粗暴，就是所有满足条件的包全部发2遍，这种做法有点损人利己，会占用更多带宽并使得流量翻倍，不过在高丢包高延迟环境下会比较有效。</li>
-</ol>
-<p>受VPS的限制，可选的加速工具只有net-speeder。</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>目前在VPS上装的系统是Ubuntu 15.10，在Ubuntu下安装net-speeder还是比较简单的。</p>
-<p>首先下载net-speeder的源码并解压，解压后有个路径net-speeder-master<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget https://github.com/snooda/net-speeder/archive/master.zip</span></span><br><span class="line"><span class="comment"># unzip master.zip</span></span><br><span class="line"><span class="comment"># cd net-speeder-master</span></span><br></pre></td></tr></table></figure></p>
-<p>如果解压时提示unzip命令没找到，需要先安装unzip<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install unzip</span></span><br></pre></td></tr></table></figure></p>
-<p>准备编译的环境，安装几个依赖的包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># apt-get install libnet1-dev</span></span><br><span class="line"><span class="comment"># apt-get install libpcap0.8-dev</span></span><br></pre></td></tr></table></figure></p>
-<p>编译，因为VPS是OpenVZ架构的，需要加-DCOOKED参数，KVM的不用加<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sh build.sh -DCOOKED</span></span><br></pre></td></tr></table></figure></p>
-<p>编译后，当前目录下会有个net_speeder的可执行文件。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>执行net-speeder的命令格式：<code>./net_speeder 网卡名 加速规则（bpf规则）</code></p>
-<p>网卡名可以用ifconfig命令看到，我的VPS上显示有2个网卡名：venet0 和 venet0:0，从IP地址看，后面一个绑定的是实际的VPS外网IP。</p>
-<p>加速规则实际是个bpf规则，用来过滤哪些包需要发2遍，要了解更详细的bpf规则可以google一下。</p>
-<p>项目的作者推荐的加速规则如下，重发所有的ip包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "ip"</span></span><br></pre></td></tr></table></figure></p>
-<p>网上很多人推荐的加速规则如下，重发所有的tcp包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "tcp"</span></span><br></pre></td></tr></table></figure></p>
-<p>但这两种规则范围还是太大了，尤其是作者推荐的，把所有的ip包全部发2遍，这么玩感觉有点耍流氓了。</p>
-<p>而我的目的只需要给Shadowsocks加速，可以设定只加速Shadowsocks监听的端口，假设端口是8388，只加速这个端口的命令如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "tcp src port 8388"</span></span><br></pre></td></tr></table></figure></p>
-<p>假如需要给多个端口加速，命令可以写成：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./net_speeder venet0:0 "tcp src port 8388 or port 8389"</span></span><br></pre></td></tr></table></figure></p>
-<p>以后台方式执行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># nohup ./net_speeder venet0:0 "tcp src port 8388" &gt;/dev/null 2&gt;&amp;1 &amp;</span></span><br></pre></td></tr></table></figure></p>
-<p>关闭net-speeder<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># killall net_speeder</span></span><br></pre></td></tr></table></figure></p>
-<p>把这个工具加入开机启动，先拷贝到/usr/bin目录下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cp ./net_speeder /usr/bin</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'nohup /usr/bin/net_speeder venet0:0 "tcp src port 8388" &gt;/dev/null 2&gt;&amp;1 &amp;'</span> &gt;&gt; /etc/rc.local</span><br></pre></td></tr></table></figure></p>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>没详细测试加速前后下载等速度的差异，从youtube来看，效果还是非常明显的，youtube统计信息里的速度有了非常大的提升，缓存进度条跑的快了很多，一般视频都不会中断了。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1543,7 +1530,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1553,7 +1540,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

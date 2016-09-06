@@ -1,0 +1,573 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Nginx,Ubuntu,GateOne," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="平常要操作VPS，大多是用putty这样的SSH客户端连接，但某些情况，不能直接通过SSH连接，putty就无法使用了。最近试用了一下GateOne，这是一个Web方式的SSH，安装设置好后，就可以通过Web页面来访问VPS了，试用下来，还是挺好用的。
+GateOne是开源的，在GitHub上的地址：https://github.com/liftoff/GateOne官方的介绍：http://li">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 安装配置 GateOne">
+<meta property="og:url" content="https://zhgcao.github.io/2016/09/06/ubuntu-install-gateone/index.html">
+<meta property="og:site_name" content="匿名">
+<meta property="og:description" content="平常要操作VPS，大多是用putty这样的SSH客户端连接，但某些情况，不能直接通过SSH连接，putty就无法使用了。最近试用了一下GateOne，这是一个Web方式的SSH，安装设置好后，就可以通过Web页面来访问VPS了，试用下来，还是挺好用的。
+GateOne是开源的，在GitHub上的地址：https://github.com/liftoff/GateOne官方的介绍：http://li">
+<meta property="og:updated_time" content="2016-09-06T12:16:55.502Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ubuntu 安装配置 GateOne">
+<meta name="twitter:description" content="平常要操作VPS，大多是用putty这样的SSH客户端连接，但某些情况，不能直接通过SSH连接，putty就无法使用了。最近试用了一下GateOne，这是一个Web方式的SSH，安装设置好后，就可以通过Web页面来访问VPS了，试用下来，还是挺好用的。
+GateOne是开源的，在GitHub上的地址：https://github.com/liftoff/GateOne官方的介绍：http://li">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhgcao.github.io/2016/09/06/ubuntu-install-gateone/"/>
+
+  <title> Ubuntu 安装配置 GateOne | 匿名 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">匿名</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">爱自由、爱爬墙</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Ubuntu 安装配置 GateOne
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-06T19:03:29+08:00" content="2016-09-06">
+              2016-09-06
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>平常要操作VPS，大多是用putty这样的SSH客户端连接，但某些情况，不能直接通过SSH连接，putty就无法使用了。<br>最近试用了一下GateOne，这是一个Web方式的SSH，安装设置好后，就可以通过Web页面来访问VPS了，试用下来，还是挺好用的。</p>
+<p>GateOne是开源的，在GitHub上的地址：<a href="https://github.com/liftoff/GateOne" target="_blank" rel="external">https://github.com/liftoff/GateOne</a><br>官方的介绍：<a href="http://liftoff.github.io/GateOne/" target="_blank" rel="external">http://liftoff.github.io/GateOne/</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>GateOne是用Python基于tornado框架开发的，要安装GateOne，需要先安装python、pip、tornado。<br>python、pip的安装略过，tornado可以用如下命令安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip install tornado</span></span><br></pre></td></tr></table></figure></p>
+<p>找一个目录，从GitHub下载GateOne的代码并安装（需要root权限）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git clone git://github.com/liftoff/GateOne</span></span><br><span class="line"><span class="comment"># cd GateOne/</span></span><br><span class="line"><span class="comment"># python setup.py install</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>安装完成后，直接执行如下命令就能启动GateOne（如果有Nginx、Apache等web服务器占用了443端口，需要先停止）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gateone</span></span><br></pre></td></tr></table></figure></p>
+<p>如果要以后台方式启动，可以用如下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># service gateone start</span></span><br></pre></td></tr></table></figure></p>
+<p>执行后，在浏览器输入<code>https://&lt;VPS IP&gt;</code> 就能使用了。</p>
+<h2 id="配合Nginx的设置"><a href="#配合Nginx的设置" class="headerlink" title="配合Nginx的设置"></a>配合Nginx的设置</h2><p>虽然GateOne并不需要设置就能用，但其自带的SSL证书是无效的，访问时会提示网站不可信，同时，可能也不希望其独占443端口，这时可以配合Nginx来使用。</p>
+<p>先修改GateOne的配置文件：<code>/etc/gateone/conf.d/10server.conf</code><br>找到以下几项内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;address&quot;: &quot;127.0.0.1&quot;,		</span><br><span class="line">&quot;disable_ssl&quot;: true,</span><br><span class="line">&quot;port&quot;: 54321,</span><br><span class="line">&quot;url_prefix&quot;: &quot;/gateone/&quot;,</span><br></pre></td></tr></table></figure></p>
+<p>address改为”127.0.0.1”，这样外网不能直接访问GateOne，只能通过Nginx转发<br>disable_ssl设为True，表示不用GateOne自带的证书<br>port改为一个未占用的端口，要和Nginx设置一致<br>url_prefix改为”/gateone/“，要和Nginx设置一致</p>
+<p>修改Nginx的设置文件，如<code>/etc/nginx/sites-enabled/default</code>，设置示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl;</span><br><span class="line">    server_name  &lt;domain&gt;;</span><br><span class="line">	</span><br><span class="line">	ssl on;</span><br><span class="line">    ssl_certificate /etc/letsencrypt/live/&lt;domain&gt;/fullchain.pem;</span><br><span class="line">    ssl_certificate_key /etc/letsencrypt/live/&lt;domain&gt;/privkey.pem;	</span><br><span class="line"></span><br><span class="line">    # GateOne</span><br><span class="line">    location /gateone/ &#123;</span><br><span class="line">        proxy_pass       http://127.0.0.1:54321;</span><br><span class="line"></span><br><span class="line">        proxy_redirect off;</span><br><span class="line">        proxy_pass_header Server;</span><br><span class="line">        proxy_set_header Host $http_host;</span><br><span class="line">        proxy_set_header X-Real-IP $http_address;</span><br><span class="line">        proxy_set_header X-Scheme $scheme;</span><br><span class="line"></span><br><span class="line">        proxy_http_version 1.1;</span><br><span class="line">        proxy_set_header Upgrade $http_upgrade;</span><br><span class="line">        proxy_set_header Connection &quot;upgrade&quot;;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中的location和proxy_pass中的端口，要和GateOne中的设置一致。</p>
+<p>设置好后，重启Nginx和GateOne，然后在浏览器输入<code>https://&lt;Domain&gt;/gateone/</code> 就能使用了。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>GateOne用起来很方便，基本试试就会了，功能也比较强大，一个页面还可以最多开4个窗口，另外，还支持直接查看图片、pdf等文件，这点比putty还方便。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Nginx/" rel="tag">#Nginx</a>
+          
+            <a href="/tags/Ubuntu/" rel="tag">#Ubuntu</a>
+          
+            <a href="/tags/GateOne/" rel="tag">#GateOne</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/07/ubuntu-install-letsencrypt/" rel="next" title="Ubuntu 安装 Let's Encrypt 获取免费证书">
+                <i class="fa fa-chevron-left"></i> Ubuntu 安装 Let's Encrypt 获取免费证书
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="匿名" />
+          <p class="site-author-name" itemprop="name">匿名</p>
+          <p class="site-description motion-element" itemprop="description">没有什么能够阻挡，你对自由的向往！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动"><span class="nav-number">2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配合Nginx的设置"><span class="nav-number">3.</span> <span class="nav-text">配合Nginx的设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">匿名</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
